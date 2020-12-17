@@ -72,8 +72,11 @@ sarpy
 # ╔═╡ 47c5d102-e241-11ea-01b0-69349d0cca98
 sarpy.__version__
 
+# ╔═╡ 0aee9dd0-407a-11eb-387d-f739a5ccfcc1
+ENV["HOME"] = "C:\\Users\\michael"
+
 # ╔═╡ a688346e-e241-11ea-079c-5bbb6d3d821f
-filename = joinpath(ENV["HOME"], "data/sicd_example_1_PFA_RE32F_IM32F_HH.nitf")
+filename = joinpath(ENV["HOME"], "data/20151027_1027X04_PS0017_PT000002_N03_M1_CH0_OSAPF.ntf")
 
 # ╔═╡ 6a393c8a-e244-11ea-1e6e-f90a6f7e8e9a
 md"Now its true! edit back to title for presentation"
@@ -220,6 +223,12 @@ meta
 # ╔═╡ 7d6b6684-e2e9-11ea-0cd4-25b7a0e6faf8
 norm_img = log10.(sqrt.(real_img.^2 + complex_img.^2))
 
+# ╔═╡ 17f56890-4081-11eb-36fc-e9a013dc9be5
+norm_img[(norm_img .< 0)] .= 0
+
+# ╔═╡ 8b84cd60-4080-11eb-0692-3d12551ef123
+minimum(norm_img), maximum(norm_img)
+
 # ╔═╡ c5933202-e2e9-11ea-3a19-ed13ed0c8ffe
 scaled_img = (norm_img .- minimum(norm_img)) / (maximum(norm_img) - minimum(norm_img)) * 1.0
 
@@ -302,6 +311,7 @@ def nitf_io(filename):
 # ╠═01bf7fd4-e241-11ea-3f42-6bee5af52256
 # ╠═6a643d98-331d-11eb-19cd-6b6edabe23ca
 # ╠═47c5d102-e241-11ea-01b0-69349d0cca98
+# ╠═0aee9dd0-407a-11eb-387d-f739a5ccfcc1
 # ╠═a688346e-e241-11ea-079c-5bbb6d3d821f
 # ╟─6a393c8a-e244-11ea-1e6e-f90a6f7e8e9a
 # ╠═ba6d2d5e-e241-11ea-3e8b-87c2a002f7ec
@@ -343,6 +353,8 @@ def nitf_io(filename):
 # ╠═62434564-33f4-11eb-04e7-27c2f43b0dd5
 # ╠═749b8eda-e2e9-11ea-2b42-4de85579b06b
 # ╠═7d6b6684-e2e9-11ea-0cd4-25b7a0e6faf8
+# ╠═17f56890-4081-11eb-36fc-e9a013dc9be5
+# ╠═8b84cd60-4080-11eb-0692-3d12551ef123
 # ╠═c5933202-e2e9-11ea-3a19-ed13ed0c8ffe
 # ╠═e17848a2-3322-11eb-0ec0-578a0a1d4c1b
 # ╠═4d59a368-e2ef-11ea-18de-95700e8682a8
