@@ -11,10 +11,12 @@ begin
 	# Activate the temporary environment
 	Pkg.activate(mktempdir())
 	# Add the packages (downloading them if necessary)
-	Pkg.add(["Images", "PyCall"])
+	Pkg.add(["BenchmarkTools", "Images", "PyCall", "SatelliteToolbox"])
 	# Load the packages
+	using BenchmarkTools
 	using Images
 	using PyCall
+	using SatelliteToolbox
 end
 
 # ╔═╡ f85eb8ca-649c-11eb-19bb-99e1a83e459b
@@ -201,6 +203,131 @@ md"""
 # ╔═╡ ced304c6-64af-11eb-28a9-bd26b77e4b48
 md"### Check [juliahub.com](https://juliahub.com/ui/Home) for your favorites!"
 
+# ╔═╡ 489df172-6577-11eb-036a-0721f2d5e86a
+br
+
+# ╔═╡ 4f914b28-6577-11eb-307e-d3fcb5d7090b
+md"
+### Package Spotlight: SatelliteToolbox"
+
+# ╔═╡ 2efe693a-6578-11eb-03a9-53286e9939cc
+br
+
+# ╔═╡ 65661654-6577-11eb-3a2a-cd07152d69ee
+md"#### Estimate satellite positions: Matlab vs Julia
+- 196 satellites
+- Use the SGP4 propagator
+- Time range of 24 hours into the past.
+- Estimate the oribital elements and positions every 15 seconds
+"
+
+# ╔═╡ ceea480c-6579-11eb-0552-05d28e60ca9c
+filename = "/home/michael/dev/presentations/sats.txt";
+
+# ╔═╡ ff666316-6578-11eb-09f4-170f2dde1be6
+tles = read_tle(filename);
+
+# ╔═╡ 9704d25c-6579-11eb-32ab-0f7e1a5e1da5
+md"#### The two steps of the orbit calculation are initialization and propagation, combined below into a single function."
+
+# ╔═╡ bd8280f0-6579-11eb-2551-8f7d476536c6
+function calculate_orbit(tle, time_range)
+    orb_init = init_orbit_propagator(Val(:sgp4), tle)
+    return propagate!(orb_init, time_range)
+end
+
+# ╔═╡ dea30944-6579-11eb-3731-631bfa992cc4
+md"#### Run all satellites the easy way (and time it!)"
+
+# ╔═╡ ff50c74e-6579-11eb-1cb2-7598f56c6cf1
+all_orbits(tles, time_range, L=length(tles)) = [calculate_orbit(tles[i], time_range) for i = 1:L]
+
+# ╔═╡ 56c4e064-657a-11eb-3a34-3bc05b199dd1
+time_steps = 0:15:86400
+
+# ╔═╡ 2e2b882e-657a-11eb-3fd2-833ec80ab780
+b = @benchmark all_orbits(tles, time_steps)
+
+# ╔═╡ ed97389c-657b-11eb-2a66-85ea207477c4
+mtime = 31.06;
+
+# ╔═╡ 7de28764-657a-11eb-3a09-dbfe24cad780
+md"
+#### Matlab - $mtime s
+#### Julia  - $(round(b.times[1]/1e9, digits=3)) s
+
+#### Julia ran $(round(mtime/(b.times[1]/1e9), digits=1))x faster than Matlab!
+"
+
+# ╔═╡ 6496d06a-657c-11eb-0135-0d8a17125891
+br
+
+# ╔═╡ 5a33f654-657c-11eb-1a9c-1bb3baf532f0
+md"### Can we do better? ABSOLUTELY!"
+
+# ╔═╡ a8398ca8-657d-11eb-0a10-fd6c26ceeffd
+md"""#### Step 1 - Use for-loop "long version"""
+
+# ╔═╡ 6c4a3ef0-657c-11eb-1117-addb8a66db25
+function all_orbits_2(tles, time_range, L=length(tles)) 
+	all_orbits = []
+	for i = 1:L
+		push!(all_orbits, calculate_orbit(tles[i], time_range))
+	end
+	return all_orbits
+end
+
+# ╔═╡ fda71f84-657d-11eb-231b-39069e573811
+bigbr
+
+# ╔═╡ 861533e8-657d-11eb-2521-f17727427b00
+md"""#### Step 2 -  Pre-allocate the array"""
+
+# ╔═╡ cd6f2456-657d-11eb-3ab3-b577f271d547
+function all_orbits_3(tles, time_range, L=length(tles))
+    array = Array{Any, 1}(undef, L)
+	
+    for i = 1:L
+        array[i] = calculate_orbit(tles[i], time_range)
+    end
+	
+    return array
+end
+
+# ╔═╡ fadd51ae-657d-11eb-24f4-fb27f55fb4ba
+bigbr
+
+# ╔═╡ 0ab6b764-657e-11eb-2aed-b593a642430b
+md"""### Step 3 - Add multi-threading"""
+
+# ╔═╡ ee033436-657e-11eb-1074-c56a95eacd10
+nt = Threads.nthreads()
+
+# ╔═╡ ce725472-657d-11eb-150d-47449caa17e1
+function threaded_orbits(tles, time_range, L=length(tles))
+    array = Array{Any, 1}(undef, L)
+
+    Threads.@threads for i in eachindex(array)
+        array[i] = calculate_orbit(tles[i], time_range)
+    end
+
+    return array
+end
+
+
+# ╔═╡ 75512cd4-657e-11eb-2640-87279ba81927
+c = @benchmark threaded_orbits(tles, time_steps)  # 173.77 ms lowest time
+
+# ╔═╡ 485002ee-657e-11eb-2a1e-4b6ceb4e86b4
+md"
+#### Matlab - $mtime s
+#### Julia (1 thread) - $(round(b.times[1]/1e9, digits=3)) s
+#### Julia ($nt threads) - $(round(c.times[1]/1e9, digits=3)) s
+
+#### Multi-threaded version is $(round(b.times[1]/c.times[1], digits=1))x faster.
+#### Final result: Julia is $(round(mtime/(c.times[1]/1e9), digits=1))x faster than Matlab!
+"
+
 # ╔═╡ Cell order:
 # ╠═c7ed9838-6496-11eb-1d16-6f5d44ba89a9
 # ╠═f85eb8ca-649c-11eb-19bb-99e1a83e459b
@@ -237,3 +364,30 @@ md"### Check [juliahub.com](https://juliahub.com/ui/Home) for your favorites!"
 # ╟─c07d8068-64af-11eb-3ebd-2b8475096673
 # ╟─52ceed22-64b4-11eb-2128-89132de079cb
 # ╟─ced304c6-64af-11eb-28a9-bd26b77e4b48
+# ╟─489df172-6577-11eb-036a-0721f2d5e86a
+# ╟─4f914b28-6577-11eb-307e-d3fcb5d7090b
+# ╟─2efe693a-6578-11eb-03a9-53286e9939cc
+# ╟─65661654-6577-11eb-3a2a-cd07152d69ee
+# ╠═ceea480c-6579-11eb-0552-05d28e60ca9c
+# ╠═ff666316-6578-11eb-09f4-170f2dde1be6
+# ╟─9704d25c-6579-11eb-32ab-0f7e1a5e1da5
+# ╠═bd8280f0-6579-11eb-2551-8f7d476536c6
+# ╟─dea30944-6579-11eb-3731-631bfa992cc4
+# ╠═ff50c74e-6579-11eb-1cb2-7598f56c6cf1
+# ╠═56c4e064-657a-11eb-3a34-3bc05b199dd1
+# ╠═2e2b882e-657a-11eb-3fd2-833ec80ab780
+# ╟─ed97389c-657b-11eb-2a66-85ea207477c4
+# ╟─7de28764-657a-11eb-3a09-dbfe24cad780
+# ╟─6496d06a-657c-11eb-0135-0d8a17125891
+# ╟─5a33f654-657c-11eb-1a9c-1bb3baf532f0
+# ╟─a8398ca8-657d-11eb-0a10-fd6c26ceeffd
+# ╠═6c4a3ef0-657c-11eb-1117-addb8a66db25
+# ╟─fda71f84-657d-11eb-231b-39069e573811
+# ╟─861533e8-657d-11eb-2521-f17727427b00
+# ╠═cd6f2456-657d-11eb-3ab3-b577f271d547
+# ╟─fadd51ae-657d-11eb-24f4-fb27f55fb4ba
+# ╟─0ab6b764-657e-11eb-2aed-b593a642430b
+# ╠═ee033436-657e-11eb-1074-c56a95eacd10
+# ╠═ce725472-657d-11eb-150d-47449caa17e1
+# ╠═75512cd4-657e-11eb-2640-87279ba81927
+# ╟─485002ee-657e-11eb-2a1e-4b6ceb4e86b4
