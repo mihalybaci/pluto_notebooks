@@ -28,6 +28,17 @@ bigbr = HTML("<br><br><br><br>");
 # ╔═╡ f499ecb4-6492-11eb-19c2-43bda1cf2a0c
 html"<button onclick=present()>Present</button>"
 
+# ╔═╡ 5060703e-6712-11eb-21c7-4f43e45d33d4
+md"# JuliaCon 2021
+
+### **Location**: Everywhere on Earth
+
+### **Date**: 28 -- 30 July 2021
+
+### **Cost**: FREE
+
+### **Registration**: https://juliacon.org/2021/"
+
 # ╔═╡ 37214cae-6492-11eb-2c62-ddff99867043
 md"# Exploring the Julia  Language"
 
@@ -333,7 +344,8 @@ md"
 # ╠═f85eb8ca-649c-11eb-19bb-99e1a83e459b
 # ╠═2055d28c-649d-11eb-3b12-639929fff5fa
 # ╟─f499ecb4-6492-11eb-19c2-43bda1cf2a0c
-# ╟─37214cae-6492-11eb-2c62-ddff99867043
+# ╟─5060703e-6712-11eb-21c7-4f43e45d33d4
+# ╠═37214cae-6492-11eb-2c62-ddff99867043
 # ╟─03c3bf38-6493-11eb-1cd2-4bcf96696f89
 # ╟─d3220a8c-6495-11eb-0c22-0d1b450c91f1
 # ╟─80745e40-6498-11eb-2f82-d133e2d32f78
