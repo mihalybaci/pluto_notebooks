@@ -25,25 +25,31 @@ begin
 	using LaTeXStrings, PlutoUI, UnicodePlots
 end
 
-# ╔═╡ 93eb7a90-3f8f-11eb-3768-7d5f91009790
-html"<button onclick=present()>Present</button>"
-
 # ╔═╡ e9e5a2b6-3f9b-11eb-0118-616e81cfbf81
 md"""
 # Hello!
 
-### Hit the button above to enter presenation mode!
+### You are in "Live" mode. Check out the Live Docs!
+
+### Hit the button below to enter presenation mode!
 
 """
 
+# ╔═╡ b0fd37bc-6b05-11eb-2aa1-cd07650642a4
+html"<button onclick=present()>Present</button>"
+
 # ╔═╡ 1c30e3a2-3fa1-11eb-3194-1f6670d9f7c6
 md"""### Then use the arrows in the lower right to navigate pages."""
+
+# ╔═╡ 6095528c-6b05-11eb-3b1e-d14896972f93
+md"# All presentations available on github!
+https://github.com/mihalybaci/pluto_notebooks"
 
 # ╔═╡ c26ca968-3f9c-11eb-3354-65af5e81b59c
 md"""
 ## Presentation mode is easy!
 
-### All it does is add extra white space to separate cells IF AND ONLY IF markdown title headings one and two are used.
+### It adds extra white space to separate cells when title headings are used.
 
 ### Markdown heading one code looks like this:
 	
@@ -179,15 +185,16 @@ md"""
 λₛ = collect(0.001:0.001:10).*1.0e-6
 
 # ╔═╡ 57e087d6-3fa6-11eb-2036-d7c75208be09
-plts = [lineplot(0.001:0.001:10, normm(B(λₛ, Ts[i])), title = "Planck Function: T = $(Ts[ind]) K", xlim=[0, 1], xlabel = "Wavelength (μm)", ylim = [0, 1], ylabel="Spectral Radiance") for i = 1:length(Ts)];
+plts = [lineplot(0.001:0.001:10, normm(B(λₛ, Ts[i])), title = "Planck Function: T = $(Ts[ind]) K", xlim=[0, 1], xlabel = "Wavelength (μm)", ylim = [0, 1], ylabel="Normalized Radiance") for i = 1:length(Ts)];
 
 # ╔═╡ e916502a-64c0-11eb-3ecf-0d5cb5781c3b
 plts[ind]
 
 # ╔═╡ Cell order:
-# ╟─93eb7a90-3f8f-11eb-3768-7d5f91009790
 # ╟─e9e5a2b6-3f9b-11eb-0118-616e81cfbf81
+# ╟─b0fd37bc-6b05-11eb-2aa1-cd07650642a4
 # ╟─1c30e3a2-3fa1-11eb-3194-1f6670d9f7c6
+# ╟─6095528c-6b05-11eb-3b1e-d14896972f93
 # ╟─8f173574-5a6a-11eb-2d37-4fee7981c2d4
 # ╟─a5e28446-5a6a-11eb-3532-03a8419a2fcd
 # ╟─97439f4a-5a6a-11eb-3440-c77c7c9c0003
@@ -228,4 +235,4 @@ plts[ind]
 # ╟─508e3558-64ba-11eb-3b75-c5ca81618464
 # ╠═9d37fe0a-5a6c-11eb-0df3-17be21aca9cc
 # ╠═c353a0ee-3fb4-11eb-39a2-618ccb1e6654
-# ╟─57e087d6-3fa6-11eb-2036-d7c75208be09
+# ╠═57e087d6-3fa6-11eb-2036-d7c75208be09
