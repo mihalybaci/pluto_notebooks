@@ -18,6 +18,7 @@ begin
 	using Images
 	using PyCall
 	using SatelliteToolbox
+	using Printf
 end
 
 # ╔═╡ f85eb8ca-649c-11eb-19bb-99e1a83e459b
@@ -25,6 +26,9 @@ br = HTML("<br>");  # Add a semi-colon to block the output
 
 # ╔═╡ 2055d28c-649d-11eb-3b12-639929fff5fa
 bigbr = HTML("<br><br><br><br>");
+
+# ╔═╡ 91f08860-7118-11eb-304f-298cb1a9d953
+hr = html""" <hr style="border: 1px dotted"> """;
 
 # ╔═╡ f499ecb4-6492-11eb-19c2-43bda1cf2a0c
 html"<button onclick=present()>Present</button>"
@@ -55,7 +59,7 @@ md"# JuliaCon 2021
 
 # ╔═╡ 03c3bf38-6493-11eb-1cd2-4bcf96696f89
 md"""
-# A short list about [Julia](https://julialang.org)
+# A short list about Julia
 - #### Designed from the ground-up for scientific computing
 - #### Walks like Python, runs like C
 - #### Simple project environment management
@@ -69,7 +73,7 @@ md"""
 md"# How much can you bench(mark)?"
 
 # ╔═╡ 0bd4be8a-6c8c-11eb-0f56-e9c2d10bacaa
-md"#### No packages used, base language features only!"
+md"#### Base language only!"
 
 # ╔═╡ 80745e40-6498-11eb-2f82-d133e2d32f78
 load(download("https://raw.githubusercontent.com/mihalybaci/pluto_notebooks/main/images/julia_bench.png"))
@@ -105,15 +109,16 @@ bigbr
 # ╔═╡ a078a59a-6c70-11eb-22a4-015b619517c9
 md"### Stay tuned for a real-life multi-threading example!"
 
+# ╔═╡ b5fd4c3e-7118-11eb-2195-f776f9922342
+hr
+
 # ╔═╡ 44df4210-6c76-11eb-068c-e94d426035e3
 md"## Quick note on using GPUs"
 
-# ╔═╡ badd0e52-6c76-11eb-1b47-3d42daf642ea
-md"### What's the difference between training a convolutional neural network on a CPU versus a GPU?"
-
 # ╔═╡ f2cb36de-6c76-11eb-08de-4def5529ca57
 md"""
-#### Example using Flux.jl with GPU support (details omitted for clarity)
+#### Flux.jl CNN with GPU support 
+##### (details omitted for clarity)
 ```
 using Flux, Flux.Data.MNIST, Statistics
 using Flux: onehotbatch, onecold, logitcrossentropy
@@ -144,6 +149,9 @@ model = gpu(model)
 Borrowed from: https://github.com/FluxML/model-zoo/blob/master/vision/mnist/conv.jl
 """
 
+# ╔═╡ ca6e9678-7118-11eb-25bd-39cd6b1416c3
+hr
+
 # ╔═╡ dbbe2972-6c70-11eb-3b23-ab10538061b6
 md"## Pkg - the Julia package manager"
 
@@ -163,14 +171,8 @@ br
 # ╔═╡ 672d665a-6c8d-11eb-1b0f-db23a6fa9ed7
 md"**\*Read, Evaluate, Print Loop**"
 
-# ╔═╡ b365af78-6c71-11eb-0e50-c55ccaa8485c
-md"""
-## Let's say you want to try this notebook at home. Here are the steps:
-1. Download Julia
-2. Install Pluto.jl: `import Pkg; Pkg.add("Pluto")`
-3. Open Pluto notebooks: `using Pluto; Pluto.run()`
-4. Open from file: https://github.com/mihalybaci/pluto\_notebooks/blob/main/intro\_to\_julia.jl
-"""
+# ╔═╡ ea70326a-7118-11eb-0b33-adb80c9d4ee1
+hr
 
 # ╔═╡ 92b33b58-6c72-11eb-356f-1721b99b8879
 bigbr
@@ -196,10 +198,12 @@ md"""
 2. Project.toml  <-- List of manually added packages
 3. Manifest.toml <-- List of automatically added dependencies
 
-When `MyProjectFile.jl` is run, `Pkg` will automatically install the files needed to recreate the **exact same original state**.
-
-#### As long as you have the source code, the Julia version corresponding with the source code, `Project.toml`, and `Manifest.toml`, the environment will be reproducible **indefinitely regardless of package version changes**.
+##### When `MyProjectFile.jl` is run, `Pkg` will automatically install the files needed to recreate the **exact same original state**. 
+##### The environment will be reproducible **indefinitely**.
 """
+
+# ╔═╡ 8af30d8e-7119-11eb-0ab0-e3528a469764
+hr
 
 # ╔═╡ 286fb7e8-6496-11eb-1306-b56859f2ee3b
 md"""
@@ -239,23 +243,11 @@ md"""
 
 """
 
-# ╔═╡ 1ba529ee-7053-11eb-0dcd-d197d7b5d983
-is_evil(p) = rand() < p
+# ╔═╡ 70efa204-711d-11eb-2373-fd5ed207de9a
+bigbr
 
-# ╔═╡ 26c06b34-7053-11eb-20f7-ff1cb0f8a562
-is_evil(0.5)
-
-# ╔═╡ 7e4f505a-64a4-11eb-39fe-cfbceddb100d
-br
-
-# ╔═╡ 807a3b42-64a4-11eb-0601-072890f38828
-br
-
-# ╔═╡ 821b7614-64a4-11eb-16a9-6b656aed1f8a
-br
-
-# ╔═╡ 8375030e-64a4-11eb-0585-e9efffde0a79
-br
+# ╔═╡ e213ca9a-7134-11eb-12eb-adeb89716b61
+bigbr
 
 # ╔═╡ b8dbbfa4-64a1-11eb-21f3-bf8d4517e086
 md"""### Does Google live up to it's "Don't Be Evil" code of conduct?"""
@@ -284,19 +276,30 @@ md"
 Watch [The Unreasonable Effectivness of Multiple Dispatch](https://youtu.be/kc9HwsxE1OY) for more information.
 "
 
+# ╔═╡ 98336ce6-7119-11eb-1ac5-f5f3bd8f75da
+hr
+
 # ╔═╡ 05b9366a-64ae-11eb-1535-63b2eb1a237c
 md"""
 ## Speaking of Python...
 ### From within Julia is possible to use code from:
- - **C**
- - **FORTRAN**
- - C++
- - Python
- - R
- - Java
- - Matlab
- - Mathematica
+- **C**
+- **FORTRAN**
+- C++
+- Python
+- R
+- Java
+- Matlab
+- Octave
+- Mathematica
+- Objective-C
 """
+
+# ╔═╡ 010ee5f4-7135-11eb-2987-f34bb67004c1
+bigbr
+
+# ╔═╡ 3ed06d48-711e-11eb-36a5-6b0d91ec6cef
+bigbr
 
 # ╔═╡ be821d4a-64b3-11eb-0013-39de4b85317c
 md"### Examples from C"
@@ -407,6 +410,16 @@ md"#### Key points:
 - Sine calculations are 33% faster in Julia!
 ";
 
+# ╔═╡ a3063586-711e-11eb-2302-1701e48cd137
+md"""### It also works the other way!
+- **pyjulia** - Run Julia within Python
+- **JuliaCall** - Run Julia within R
+- others?
+"""
+
+# ╔═╡ a70a5e8c-7119-11eb-0ca5-ab74559db699
+hr
+
 # ╔═╡ c07d8068-64af-11eb-3ebd-2b8475096673
 md"## State-of-the-Art Packages"
 
@@ -426,14 +439,14 @@ md"""
 md"### Check [juliahub.com](https://juliahub.com/ui/Home) for your favorites!"
 
 # ╔═╡ 489df172-6577-11eb-036a-0721f2d5e86a
-br
+bigbr
+
+# ╔═╡ 3d05e82a-711f-11eb-2cc6-03e9b45e4d16
+bigbr
 
 # ╔═╡ 4f914b28-6577-11eb-307e-d3fcb5d7090b
 md"
 ### Package Spotlight: SatelliteToolbox"
-
-# ╔═╡ 2efe693a-6578-11eb-03a9-53286e9939cc
-br
 
 # ╔═╡ 65661654-6577-11eb-3a2a-cd07152d69ee
 md"#### Estimate satellite positions: Matlab vs Julia vs Python
@@ -442,6 +455,12 @@ md"#### Estimate satellite positions: Matlab vs Julia vs Python
 - Time range of 24 hours into the past.
 - Estimate the oribital elements and positions every 15 seconds
 "
+
+# ╔═╡ 4810c912-711f-11eb-112c-7da761ebebb2
+bigbr
+
+# ╔═╡ 4a10470e-711f-11eb-051a-f95adb23ca5b
+bigbr
 
 # ╔═╡ 82081be6-7070-11eb-176c-bd1e2329373e
 md"""##### The Python version
@@ -465,13 +484,10 @@ with open("/home/michael/dev/presentations/sats.txt") as file:
         else:
             line2s.append(line)
 
-
 satellites = [Satrec.twoline2rv(line1s[i], line2s[i]) for i in range(len(line1s))]
 
 time_steps = np.arange(0, 86415, 15)/86400
-
 jd_ranges = time_steps + satellites[1].jdsatepoch
-
 jd_bases = np.floor(jd_ranges)+0.5
 jd_rems = jd_ranges - jd_bases
 
@@ -479,7 +495,6 @@ test = [(base, rem) for (base, rem) in zip(jd_bases, jd_rems)]
 
 def vals(sats, bases, rems): 
     return [[sat.sgp4(base, rem) for (base, rem) in zip(bases, rems)] for sat in  sats]
-
 '''
 
 np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, number=1, repeat=10))
@@ -559,32 +574,25 @@ md"##### Python/C++ time to beat $(round(pytime, digits=2)) seconds."
 # ╔═╡ 997eaf48-7074-11eb-0f16-15e7c1604976
 bigbr
 
-# ╔═╡ ceea480c-6579-11eb-0552-05d28e60ca9c
-filename = "/home/michael/dev/presentations/sats.txt";
+# ╔═╡ 25eb4620-7120-11eb-362b-3b7ea60280f8
+md"### using SatelliteToolbox"
 
-# ╔═╡ ff666316-6578-11eb-09f4-170f2dde1be6
-tles = read_tle(filename);
-
-# ╔═╡ 394ff24c-7062-11eb-08df-4f4e6d23b902
-tles[1]
-
-# ╔═╡ 9704d25c-6579-11eb-32ab-0f7e1a5e1da5
-md"#### The two steps of the orbit calculation are initialization and propagation, combined below into a single function."
-
-# ╔═╡ bd8280f0-6579-11eb-2551-8f7d476536c6
-function calculate_orbit(tle, time_range)
-    orb_init = init_orbit_propagator(Val(:sgp4), tle)
-    return propagate!(orb_init, time_range)
+# ╔═╡ eb6c9594-711f-11eb-15e6-67223aadedd2
+begin 
+	filename = "/home/michael/dev/presentations/sats.txt"
+	tles = read_tle(filename)
+	time_steps = 0:15:86400
+	
+	function calculate_orbit(tle, time_range)
+    	orb_init = init_orbit_propagator(Val(:sgp4), tle)
+    	return propagate!(orb_init, time_range)
+	end
+	
+	all_orbits(tles, time_range, L=length(tles)) = [calculate_orbit(tles[i], time_range) for i = 1:L]
 end
 
-# ╔═╡ dea30944-6579-11eb-3731-631bfa992cc4
-md"#### Run all satellites the easy way (and time it!)"
-
-# ╔═╡ ff50c74e-6579-11eb-1cb2-7598f56c6cf1
-all_orbits(tles, time_range, L=length(tles)) = [calculate_orbit(tles[i], time_range) for i = 1:L]
-
-# ╔═╡ 56c4e064-657a-11eb-3a34-3bc05b199dd1
-time_steps = 0:15:86400
+# ╔═╡ dbd5e0b8-711f-11eb-3e9b-a1e6a9a02380
+bigbr
 
 # ╔═╡ 2e2b882e-657a-11eb-3fd2-833ec80ab780
 b = @benchmark all_orbits(tles, time_steps)
@@ -645,7 +653,7 @@ md"""#### Step 2 -  Pre-allocate the array"""
 function all_orbits_3(tles, time_range, L=length(tles))
     array = Array{Any, 1}(undef, L)
 	
-    for i = 1:L
+    for i in eachindex(array)
         array[i] = calculate_orbit(tles[i], time_range)
     end
 	
@@ -685,10 +693,13 @@ bigbr
 # ╔═╡ 75512cd4-657e-11eb-2640-87279ba81927
 c = @benchmark threaded_orbits(tles, time_steps)  # 173.77 ms lowest time
 
+# ╔═╡ eaef6282-7119-11eb-1530-33b741097913
+br
+
 # ╔═╡ 485002ee-657e-11eb-2a1e-4b6ceb4e86b4
 md"
 #### Matlab (1 thread) - $mtime s
-#### Python/C++ - $(round(pytime, digits=2)) s
+#### Python/C++ (1 thread) - $(round(pytime, digits=2)) s
 #### Julia (1 thread) - $(round(b.times[1]/1e9, digits=3)) s
 #### Julia ($nt threads) - $(round(c.times[1]/1e9, digits=3)) s
 "
@@ -700,13 +711,24 @@ br
 md"""
 ### Final results: 
 
-#### Matlab/Julia(4) = $(round(mtime/(c.times[1]/1e9), digits=1))x!
-#### PyC++/Julia(4) = $(round(pytime/(c.times[1]/1e9), digits=1))x!
+#### Matlab/Julia = $(round(mtime/(c.times[1]/1e9), digits=1))x!
+#### PyC++/Julia = $(round(pytime/(c.times[1]/1e9), digits=1))x!
+"""
+
+# ╔═╡ cf952cda-7119-11eb-2236-218a27d8e1ac
+hr
+
+# ╔═╡ d5d30458-7119-11eb-17c1-e92c27e11eb9
+md"""# Try Julia today! 
+#### https://julialang.org
+#### This notebook available here: 
+#### https://github.com/mihalybaci/pluto_notebooks
 """
 
 # ╔═╡ Cell order:
 # ╠═f85eb8ca-649c-11eb-19bb-99e1a83e459b
 # ╠═2055d28c-649d-11eb-3b12-639929fff5fa
+# ╠═91f08860-7118-11eb-304f-298cb1a9d953
 # ╟─f499ecb4-6492-11eb-19c2-43bda1cf2a0c
 # ╟─8363f966-6c8a-11eb-0485-b39bfa77d265
 # ╟─08c78d78-6b04-11eb-3ee2-a9409610de2f
@@ -723,16 +745,17 @@ md"""
 # ╟─a7d1d688-64b2-11eb-3c21-159fe6996ff1
 # ╟─a8f57646-6c70-11eb-1172-69e69a59ffbd
 # ╟─a078a59a-6c70-11eb-22a4-015b619517c9
+# ╟─b5fd4c3e-7118-11eb-2195-f776f9922342
 # ╟─44df4210-6c76-11eb-068c-e94d426035e3
-# ╟─badd0e52-6c76-11eb-1b47-3d42daf642ea
 # ╟─f2cb36de-6c76-11eb-08de-4def5529ca57
+# ╟─ca6e9678-7118-11eb-25bd-39cd6b1416c3
 # ╟─dbbe2972-6c70-11eb-3b23-ab10538061b6
 # ╟─4bff941e-6c71-11eb-15aa-95d0764dbd88
 # ╟─519fdc1e-6c71-11eb-3332-9dd6272fb4bb
 # ╟─cf3e2392-6c74-11eb-1e8c-9f62f3efc5ea
 # ╟─c4439d84-6c72-11eb-362c-f7cc8fbdaf73
 # ╟─672d665a-6c8d-11eb-1b0f-db23a6fa9ed7
-# ╟─b365af78-6c71-11eb-0e50-c55ccaa8485c
+# ╟─ea70326a-7118-11eb-0b33-adb80c9d4ee1
 # ╟─92b33b58-6c72-11eb-356f-1721b99b8879
 # ╟─8dd23ab2-6c90-11eb-3658-9d598f6b40d8
 # ╟─a0f3f1ee-6c90-11eb-2ee3-1f577f0480e9
@@ -740,21 +763,21 @@ md"""
 # ╠═a77b1794-6c71-11eb-1472-d9b2e129335f
 # ╟─a5d7823c-6c72-11eb-1daf-a1e1616ff019
 # ╟─e60170ae-6c72-11eb-02a5-a967e5461a44
+# ╟─8af30d8e-7119-11eb-0ab0-e3528a469764
 # ╟─286fb7e8-6496-11eb-1306-b56859f2ee3b
 # ╟─3ab45088-6496-11eb-0c8d-b170a971e912
 # ╟─9d185a72-649f-11eb-061d-3ba4357d4e4d
-# ╠═1ba529ee-7053-11eb-0dcd-d197d7b5d983
-# ╠═26c06b34-7053-11eb-20f7-ff1cb0f8a562
-# ╟─7e4f505a-64a4-11eb-39fe-cfbceddb100d
-# ╟─807a3b42-64a4-11eb-0601-072890f38828
-# ╟─821b7614-64a4-11eb-16a9-6b656aed1f8a
-# ╟─8375030e-64a4-11eb-0585-e9efffde0a79
+# ╟─70efa204-711d-11eb-2373-fd5ed207de9a
+# ╟─e213ca9a-7134-11eb-12eb-adeb89716b61
 # ╟─b8dbbfa4-64a1-11eb-21f3-bf8d4517e086
 # ╠═4dbfbc7e-64a2-11eb-29f0-891d4121fc8f
 # ╟─ee7515e0-64a4-11eb-3d94-77b8a34c3f7b
 # ╟─d4581d5c-64a3-11eb-0f0f-d9e006e75a06
 # ╟─9e6269f0-64a3-11eb-14ce-c1877e9fbc9e
+# ╟─98336ce6-7119-11eb-1ac5-f5f3bd8f75da
 # ╟─05b9366a-64ae-11eb-1535-63b2eb1a237c
+# ╟─010ee5f4-7135-11eb-2987-f34bb67004c1
+# ╟─3ed06d48-711e-11eb-36a5-6b0d91ec6cef
 # ╟─be821d4a-64b3-11eb-0013-39de4b85317c
 # ╠═1078b698-64ae-11eb-23b5-59dafc065ec8
 # ╠═36f1b350-6c70-11eb-2609-bb5ab899eef5
@@ -768,18 +791,22 @@ md"""
 # ╟─b5723bfe-706f-11eb-3145-e59fad8e37c2
 # ╟─bf3fb88a-706f-11eb-2eff-c78593c02a4a
 # ╟─65ccb6d2-706e-11eb-0323-13166548094b
-# ╠═b0d2c860-706e-11eb-362e-dbc1fdfb8025
+# ╟─b0d2c860-706e-11eb-362e-dbc1fdfb8025
 # ╟─c79df056-706e-11eb-0fc8-3308a1a9dae7
 # ╟─07124a24-7070-11eb-27aa-bb67c4fb65b3
 # ╟─10d1a370-7070-11eb-374a-f3d5421d8eb9
+# ╟─a3063586-711e-11eb-2302-1701e48cd137
+# ╟─a70a5e8c-7119-11eb-0ca5-ab74559db699
 # ╟─c07d8068-64af-11eb-3ebd-2b8475096673
 # ╟─52ceed22-64b4-11eb-2128-89132de079cb
 # ╟─ced304c6-64af-11eb-28a9-bd26b77e4b48
 # ╟─489df172-6577-11eb-036a-0721f2d5e86a
+# ╟─3d05e82a-711f-11eb-2cc6-03e9b45e4d16
 # ╟─4f914b28-6577-11eb-307e-d3fcb5d7090b
-# ╟─2efe693a-6578-11eb-03a9-53286e9939cc
 # ╟─65661654-6577-11eb-3a2a-cd07152d69ee
+# ╟─4810c912-711f-11eb-112c-7da761ebebb2
 # ╟─5fd01a92-7070-11eb-31fb-898d900d3b0e
+# ╟─4a10470e-711f-11eb-051a-f95adb23ca5b
 # ╟─82081be6-7070-11eb-176c-bd1e2329373e
 # ╟─500dee00-7072-11eb-2a44-dd95d512fd0a
 # ╟─de96f62c-7073-11eb-22a8-b525bb1efd7f
@@ -789,14 +816,9 @@ md"""
 # ╠═8699174c-7074-11eb-3cf0-e99217589e81
 # ╟─af0d99b4-7074-11eb-1818-95ee43a058cb
 # ╟─997eaf48-7074-11eb-0f16-15e7c1604976
-# ╠═ceea480c-6579-11eb-0552-05d28e60ca9c
-# ╠═ff666316-6578-11eb-09f4-170f2dde1be6
-# ╠═394ff24c-7062-11eb-08df-4f4e6d23b902
-# ╟─9704d25c-6579-11eb-32ab-0f7e1a5e1da5
-# ╠═bd8280f0-6579-11eb-2551-8f7d476536c6
-# ╟─dea30944-6579-11eb-3731-631bfa992cc4
-# ╠═ff50c74e-6579-11eb-1cb2-7598f56c6cf1
-# ╠═56c4e064-657a-11eb-3a34-3bc05b199dd1
+# ╟─25eb4620-7120-11eb-362b-3b7ea60280f8
+# ╠═eb6c9594-711f-11eb-15e6-67223aadedd2
+# ╟─dbd5e0b8-711f-11eb-3e9b-a1e6a9a02380
 # ╠═2e2b882e-657a-11eb-3fd2-833ec80ab780
 # ╟─98d06838-6e31-11eb-28b3-3deaea5131c7
 # ╟─ed97389c-657b-11eb-2a66-85ea207477c4
@@ -819,6 +841,9 @@ md"""
 # ╟─951fde7a-6c7c-11eb-26c4-c72635eb55a3
 # ╟─9713642c-6c7c-11eb-3c8f-f3c5d4c6cdbd
 # ╠═75512cd4-657e-11eb-2640-87279ba81927
-# ╟─485002ee-657e-11eb-2a1e-4b6ceb4e86b4
+# ╟─eaef6282-7119-11eb-1530-33b741097913
+# ╠═485002ee-657e-11eb-2a1e-4b6ceb4e86b4
 # ╟─911847b4-7075-11eb-20ef-715b719f94f4
 # ╟─7511a470-7075-11eb-123e-eb2c888210ec
+# ╟─cf952cda-7119-11eb-2236-218a27d8e1ac
+# ╟─d5d30458-7119-11eb-17c1-e92c27e11eb9
