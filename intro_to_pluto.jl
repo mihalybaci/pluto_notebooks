@@ -41,13 +41,9 @@ html"<button onclick=present()>Present</button>"
 # ╔═╡ 1c30e3a2-3fa1-11eb-3194-1f6670d9f7c6
 md"""### Then use the arrows in the lower right to navigate pages."""
 
-# ╔═╡ 6095528c-6b05-11eb-3b1e-d14896972f93
-md"# All presentations available on github!
-https://github.com/mihalybaci/pluto_notebooks"
-
 # ╔═╡ c26ca968-3f9c-11eb-3354-65af5e81b59c
 md"""
-## Presentation mode is easy!
+# Presentation mode is easy!
 
 ### It adds extra white space to separate cells when title headings are used.
 
@@ -61,47 +57,34 @@ md"""
 """
 
 # ╔═╡ bc4d34e0-3fa0-11eb-223d-09f004f40991
-md"## Add large breaks with this bit of code"
+md"## Add Custom HTML elements"
 
 # ╔═╡ cf0faa90-3fa0-11eb-077d-b1a2e7a9ddfc
 br = HTML("<br>")  # Add a semi-colon to block the output
 
+# ╔═╡ 4cd7e03e-712c-11eb-0cef-cd74d8e8e7e2
+bigbr = html"<br><br><br><br><br>"
+
 # ╔═╡ 8f173574-5a6a-11eb-2d37-4fee7981c2d4
-br
+bigbr
 
-# ╔═╡ a5e28446-5a6a-11eb-3532-03a8419a2fcd
-br
+# ╔═╡ d378abac-712c-11eb-3173-4ff0d4c58f13
+bigbr
 
-# ╔═╡ 97439f4a-5a6a-11eb-3440-c77c7c9c0003
-br
+# ╔═╡ 29dee366-712c-11eb-0515-51ba3556185b
+hr = html""" <hr style="border: 1px dotted"> """
 
-# ╔═╡ 9907544a-5a6a-11eb-0129-393de4a58886
-br
-
-# ╔═╡ 9cef13a4-5a6a-11eb-1b57-77919f4e4cd7
-br
-
-# ╔═╡ 9f47aa44-5a6a-11eb-2b7a-635f0121ba74
-br
-
-# ╔═╡ a2143b66-5a6a-11eb-2b49-73cb27ee8964
-br
-
-# ╔═╡ dfc3e0ec-3fa0-11eb-357a-59e1fb6c60f7
-md"### Then just type `br` to insert a space in between code blocks.
-"
-
-# ╔═╡ d93ded60-3fa0-11eb-0fe2-2f750c480b4e
-br
-
-# ╔═╡ 0267753a-3fa1-11eb-2a3a-b1aff4596858
-md"### Easy!"
-
-# ╔═╡ 36ec7634-3fa1-11eb-08a6-932e92613c09
-md"## Setting up a temporary environment"
+# ╔═╡ 1e143e04-712d-11eb-1931-197f6f677108
+md"""
+## Running other people's Pluto notebooks
+1. Download Julia 1.5.3
+2. Install Pluto.jl: `import Pkg; Pkg.add("Pluto")`
+3. Open Pluto notebooks: `using Pluto; Pluto.run()`
+4. Open from file: https://computationalthinking.mit.edu/Spring21/notebooks/week0/hw0.jl
+"""
 
 # ╔═╡ 49534924-3fa1-11eb-3945-59261dc1fba1
-md"### This next little bit of code sets up a new environment, adds packages, and loads them."
+md"#### This next bit sets up a new environment, then adds and loads packages."
 
 # ╔═╡ 091423bc-64b6-11eb-1b90-37c17e1b2c82
 md"**NOTE**: Multiple lines must be wrapped in a function or block."
@@ -194,21 +177,14 @@ plts[ind]
 # ╟─e9e5a2b6-3f9b-11eb-0118-616e81cfbf81
 # ╟─b0fd37bc-6b05-11eb-2aa1-cd07650642a4
 # ╟─1c30e3a2-3fa1-11eb-3194-1f6670d9f7c6
-# ╟─6095528c-6b05-11eb-3b1e-d14896972f93
 # ╟─8f173574-5a6a-11eb-2d37-4fee7981c2d4
-# ╟─a5e28446-5a6a-11eb-3532-03a8419a2fcd
-# ╟─97439f4a-5a6a-11eb-3440-c77c7c9c0003
-# ╟─9907544a-5a6a-11eb-0129-393de4a58886
-# ╟─9cef13a4-5a6a-11eb-1b57-77919f4e4cd7
-# ╟─9f47aa44-5a6a-11eb-2b7a-635f0121ba74
-# ╟─a2143b66-5a6a-11eb-2b49-73cb27ee8964
+# ╟─d378abac-712c-11eb-3173-4ff0d4c58f13
 # ╟─c26ca968-3f9c-11eb-3354-65af5e81b59c
 # ╟─bc4d34e0-3fa0-11eb-223d-09f004f40991
 # ╠═cf0faa90-3fa0-11eb-077d-b1a2e7a9ddfc
-# ╟─dfc3e0ec-3fa0-11eb-357a-59e1fb6c60f7
-# ╠═d93ded60-3fa0-11eb-0fe2-2f750c480b4e
-# ╟─0267753a-3fa1-11eb-2a3a-b1aff4596858
-# ╟─36ec7634-3fa1-11eb-08a6-932e92613c09
+# ╠═4cd7e03e-712c-11eb-0cef-cd74d8e8e7e2
+# ╠═29dee366-712c-11eb-0515-51ba3556185b
+# ╟─1e143e04-712d-11eb-1931-197f6f677108
 # ╟─49534924-3fa1-11eb-3945-59261dc1fba1
 # ╠═6cfadfea-3fa1-11eb-3530-438864914f83
 # ╟─091423bc-64b6-11eb-1b90-37c17e1b2c82
