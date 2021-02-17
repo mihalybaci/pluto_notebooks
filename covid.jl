@@ -20,7 +20,9 @@ begin
 	# Activate the temporary environment
 	Pkg.activate(mktempdir())
 	# Add the packages (downloading them if necessary)
-	Pkg.add(["CSV", "DataFrames", "Dates", "Plots", "PlutoUI", "VegaLite", "VegaDatasets"])
+	Pkg.add(["CSV", "DataFrames", "Dates", "PooledArrays", "Plots", "PlutoUI", "VegaLite", "VegaDatasets"])
+	# Add a specific version of DataAPI to avoid changes that break CSV in Pluto
+	Pkg.add(name="DataAPI", version="1.4")
 	# Load the packages
 	using CSV 
 	using DataFrames
@@ -353,11 +355,11 @@ function usa_plot(the_data, column)
 end
 
 # ╔═╡ e0d58c2a-6491-11eb-0d32-e5d18873d26a
-md"### WARNING: UPDATING THIS MAP IS QUITE SLOW!"
+md"### WARNING: UPDATING THIS MAP IS A LITTLE SLOW!"
 
 # ╔═╡ 70e8bcb8-3965-11eb-000c-55bbe767b98f
 md"""
-**Date** $(@bind ind_usa Slider(1:(length(date_data[1,12:end])), default=1)) 
+**Date** $(@bind ind_usa Slider(1:(length(date_data[1,12:end])), default=(length(date_data[1, 12:end])))) 
 """
 
 # ╔═╡ 540552aa-38b1-11eb-0d10-47125198dd3c
@@ -373,7 +375,7 @@ md"""### $([states_to_map[i]*",   " for i = 1:length(states_to_map)]...) """
 
 # ╔═╡ 5aafc1c0-38a8-11eb-13b1-350b67a918e4
 md"""
-**Date** $(@bind ind Slider(1:(length(date_data[1,12:end])), default=1)) 
+**Date** $(@bind ind Slider(1:(length(date_data[1,12:end])), default=length(date_data[1,12:end]))) 
 """
 
 # ╔═╡ 31629ca8-38a9-11eb-156b-21ce93990fbc
