@@ -93,21 +93,59 @@ load(download("https://github.com/mihalybaci/pluto_notebooks/raw/main/images/ben
 # ╔═╡ 8200b8b0-64b3-11eb-30c8-0f043db218d4
 bigbr
 
+# ╔═╡ a107c3ae-751e-11eb-2449-e1a746074ca0
+bigbr
+
+# ╔═╡ 91372ae6-751e-11eb-1615-d94fa16a7f4e
+md"### Optimized matrix-matrix multiplication"
+
+# ╔═╡ 7123daf8-751e-11eb-1cb0-8b00a6f054ac
+load(download("https://user-images.githubusercontent.com/8043603/105195788-f6001a80-5b08-11eb-81ff-c6eec15b60bf.png"))
+
+# ╔═╡ 7dc1f860-751e-11eb-03ff-5f18abfa6ad8
+bigbr
+
+# ╔═╡ a5943e0c-751e-11eb-29b8-af711725dba9
+bigbr
+
+# ╔═╡ 02992046-751e-11eb-1e8e-37534d3b339c
+load("/home/michael/dev/presentations/numpytimings.png")
+
+# ╔═╡ bd00765a-751e-11eb-3729-5904acfefaff
+bigbr
+
+# ╔═╡ bee68ed2-751e-11eb-3c09-d1a25383b36c
+bigbr
+
 # ╔═╡ a7d1d688-64b2-11eb-3c21-159fe6996ff1
 md"""
-### petaFLOPS club
+### Julia ❤ HPC!|
+
+#### petaFLOPS club
 - C
 - C++
 - FORTRAN
 - Julia
 
-In 2017, the Celeste astronomical image analysis project (writtin in Julia) reached 1.54 petaFLOPS on the Knights Landing supercomputer in 2017."""
+##### In 2017, the Celeste astronomical image analysis project (writtin in Julia) reached 1.54 petaFLOPS on the Knights Landing supercomputer."""
 
-# ╔═╡ a8f57646-6c70-11eb-1172-69e69a59ffbd
+# ╔═╡ 9b7ee436-751d-11eb-1ffe-bd3f35127821
 bigbr
 
-# ╔═╡ a078a59a-6c70-11eb-22a4-015b619517c9
-md"### Stay tuned for a real-life multi-threading example!"
+# ╔═╡ 0dda3e88-7510-11eb-3ebc-310d68675c2d
+md"""### A final note on benchmarks
+#### Dr. Steven Johnson, MIT Professor and creator of FFTW
+
+##### Excerpts from a [post](https://discourse.julialang.org/t/julias-applicable-context-is-getting-narrower-over-time/55042/40) on Julia Discourse. 
+
+>It’s impressive that it’s possible to beat optimized C libraries in certain cases with native Julia code, but focusing too much on such cases will often lead people astray...
+>
+>Fundamentally, the reason Julia exists is not to beat the performance of existing C libraries on existing problems... Julia is attractive for people who need to write new high-performance code to solve new problems, which don’t fit neatly into the boxes provided by existing numpy library functions...
+>
+>... And the code you write in Julia can at the same time be more flexible (type-generic and composable), allowing greater code re-use.
+>
+>This is important for those of us who want to work on new problems and to go beyond endlessly recycling the solutions of the past.
+"""
 
 # ╔═╡ b5fd4c3e-7118-11eb-2195-f776f9922342
 hr
@@ -243,6 +281,12 @@ md"""
 
 """
 
+# ╔═╡ 6a37ffac-713d-11eb-0444-03a10357adb7
+mutable struct Alien
+	planet
+	Alien() = new("")
+end
+
 # ╔═╡ 70efa204-711d-11eb-2373-fd5ed207de9a
 bigbr
 
@@ -281,7 +325,7 @@ hr
 
 # ╔═╡ 05b9366a-64ae-11eb-1535-63b2eb1a237c
 md"""
-## Speaking of Python...
+## Unparalleled Interoperability
 ### From within Julia is possible to use code from:
 - **C**
 - **FORTRAN**
@@ -312,7 +356,7 @@ ccall(:clock, Int32, ())
 s = "The Julia programming language rocks!"
 
 # ╔═╡ 07b47076-6c70-11eb-3e80-b1783abb82fc
-@ccall strlen(s::Cstring)::Csize_t
+Int(@ccall strlen(s::Cstring)::Csize_t)
 
 # ╔═╡ ace5815a-64ae-11eb-2fcd-dbe033e24d64
 # This code prints the current of SHELL
@@ -414,7 +458,6 @@ md"#### Key points:
 md"""### It also works the other way!
 - **pyjulia** - Run Julia within Python
 - **JuliaCall** - Run Julia within R
-- others?
 """
 
 # ╔═╡ a70a5e8c-7119-11eb-0ca5-ab74559db699
@@ -429,7 +472,7 @@ md"""
 (all Julia packages end in .jl)
 - **Conda, PyCall** -- Python interop
 - **IJulia** -- Jupyter notebooks
-- **Pluto, PlutoUI** -- Pluto notebooks (use this one)
+- **Pluto, PlutoUI** -- Pluto notebooks!!!
 - **CSV, DataFrames** -- Core dataframes support
 - **Plots, Gadfly** -- Plotting
 - **Differential Equations** -- State-of-the-art diff eq solvers
@@ -491,13 +534,11 @@ jd_ranges = time_steps + satellites[1].jdsatepoch
 jd_bases = np.floor(jd_ranges)+0.5
 jd_rems = jd_ranges - jd_bases
 
-test = [(base, rem) for (base, rem) in zip(jd_bases, jd_rems)]
-
 def vals(sats, bases, rems): 
     return [[sat.sgp4(base, rem) for (base, rem) in zip(bases, rems)] for sat in  sats]
 '''
 
-np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, number=1, repeat=10))
+np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, number=1, repeat=20))
 ```
 """
 
@@ -533,14 +574,14 @@ jd_ranges = time_steps + satellites[1].jdsatepoch
 jd_bases = np.floor(jd_ranges)+0.5
 jd_rems = jd_ranges - jd_bases
 
-test = [(base, rem) for (base, rem) in zip(jd_bases, jd_rems)]
+#test = [(base, rem) for (base, rem) in zip(jd_bases, jd_rems)]
 
 def vals(sats, bases, rems): 
     return [[sat.sgp4(base, rem) for (base, rem) in zip(bases, rems)] for sat in  sats]
 '''
 
 def the_time():
-	return np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, number=1, repeat=10))"""
+	return np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, number=1, repeat=20))"""
 	
 	pytime = py"the_time"()
 	md"##### Python time to beat $(round(pytime, digits=2)) seconds."
@@ -575,7 +616,7 @@ md"##### Python/C++ time to beat $(round(pytime, digits=2)) seconds."
 bigbr
 
 # ╔═╡ 25eb4620-7120-11eb-362b-3b7ea60280f8
-md"### using SatelliteToolbox"
+md"### using [SatelliteToolbox](https://github.com/JuliaSpace/SatelliteToolbox.jl/blob/62ee9ecefd91304549c3d3ea6ea82d43ff9eea52/src/submodules/SGP4/sgp4_model.jl)"
 
 # ╔═╡ eb6c9594-711f-11eb-15e6-67223aadedd2
 begin 
@@ -653,7 +694,7 @@ md"""#### Step 2 -  Pre-allocate the array"""
 function all_orbits_3(tles, time_range, L=length(tles))
     array = Array{Any, 1}(undef, L)
 	
-    for i in eachindex(array)
+    for i in eachindex(array)  # Supports OffsetArrays
         array[i] = calculate_orbit(tles[i], time_range)
     end
 	
@@ -742,9 +783,17 @@ md"""# Try Julia today!
 # ╟─a2ef89dc-649c-11eb-100f-55274909e1b4
 # ╟─ac11c534-649c-11eb-0d82-dff01e7f1cc8
 # ╟─8200b8b0-64b3-11eb-30c8-0f043db218d4
+# ╟─a107c3ae-751e-11eb-2449-e1a746074ca0
+# ╟─91372ae6-751e-11eb-1615-d94fa16a7f4e
+# ╟─7123daf8-751e-11eb-1cb0-8b00a6f054ac
+# ╟─7dc1f860-751e-11eb-03ff-5f18abfa6ad8
+# ╟─a5943e0c-751e-11eb-29b8-af711725dba9
+# ╟─02992046-751e-11eb-1e8e-37534d3b339c
+# ╟─bd00765a-751e-11eb-3729-5904acfefaff
+# ╟─bee68ed2-751e-11eb-3c09-d1a25383b36c
 # ╟─a7d1d688-64b2-11eb-3c21-159fe6996ff1
-# ╟─a8f57646-6c70-11eb-1172-69e69a59ffbd
-# ╟─a078a59a-6c70-11eb-22a4-015b619517c9
+# ╟─9b7ee436-751d-11eb-1ffe-bd3f35127821
+# ╟─0dda3e88-7510-11eb-3ebc-310d68675c2d
 # ╟─b5fd4c3e-7118-11eb-2195-f776f9922342
 # ╟─44df4210-6c76-11eb-068c-e94d426035e3
 # ╟─f2cb36de-6c76-11eb-08de-4def5529ca57
@@ -767,6 +816,7 @@ md"""# Try Julia today!
 # ╟─286fb7e8-6496-11eb-1306-b56859f2ee3b
 # ╟─3ab45088-6496-11eb-0c8d-b170a971e912
 # ╟─9d185a72-649f-11eb-061d-3ba4357d4e4d
+# ╠═6a37ffac-713d-11eb-0444-03a10357adb7
 # ╟─70efa204-711d-11eb-2373-fd5ed207de9a
 # ╟─e213ca9a-7134-11eb-12eb-adeb89716b61
 # ╟─b8dbbfa4-64a1-11eb-21f3-bf8d4517e086
@@ -808,7 +858,7 @@ md"""# Try Julia today!
 # ╟─5fd01a92-7070-11eb-31fb-898d900d3b0e
 # ╟─4a10470e-711f-11eb-051a-f95adb23ca5b
 # ╟─82081be6-7070-11eb-176c-bd1e2329373e
-# ╟─500dee00-7072-11eb-2a44-dd95d512fd0a
+# ╠═500dee00-7072-11eb-2a44-dd95d512fd0a
 # ╟─de96f62c-7073-11eb-22a8-b525bb1efd7f
 # ╟─d3cdb9e2-7073-11eb-0753-8bf123599cac
 # ╠═5156ee2e-7074-11eb-214a-33b40fbcb440
@@ -842,7 +892,7 @@ md"""# Try Julia today!
 # ╟─9713642c-6c7c-11eb-3c8f-f3c5d4c6cdbd
 # ╠═75512cd4-657e-11eb-2640-87279ba81927
 # ╟─eaef6282-7119-11eb-1530-33b741097913
-# ╠═485002ee-657e-11eb-2a1e-4b6ceb4e86b4
+# ╟─485002ee-657e-11eb-2a1e-4b6ceb4e86b4
 # ╟─911847b4-7075-11eb-20ef-715b719f94f4
 # ╟─7511a470-7075-11eb-123e-eb2c888210ec
 # ╟─cf952cda-7119-11eb-2236-218a27d8e1ac
