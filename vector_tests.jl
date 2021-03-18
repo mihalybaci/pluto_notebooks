@@ -119,7 +119,7 @@ md"### Steerable dishes with arbitrary pointing"
 δ = -π/6  # Off-zenith angle
 
 # ╔═╡ fb706d86-880c-11eb-35b3-676ce948c32e
-ϕ = deg2rad(12.51045)#π/9  # FOV
+ϕ = π/9 # deg2rad(12.51045) # FOV
 
 # ╔═╡ d7b7ea12-87fe-11eb-3e97-b1e7495ccb0f
 p⃗ = rotate(a⃗, δ)  # pointing vector
@@ -137,12 +137,15 @@ ê1 = rotate(p̂, ϕ)  # positive FOV (for plotting only)
 ê2 = rotate(p̂, -ϕ)  # negative FOV (for plotting only)
 
 # ╔═╡ bebd3b56-8801-11eb-0975-9f86f71994d0
-FOVδ = [ a⃗[1], a⃗[1] + ê2[1]], [a⃗[2], a⃗[2] + ê2[2]]
+FOVδ1 = [a⃗[1] + ê1[1], a⃗[1], a⃗[1] + ê2[1]], [a⃗[2] + ê1[2], a⃗[2], a⃗[2] + ê2[2]]
+
+# ╔═╡ 346efcbc-8815-11eb-1c36-ddd213c1d64d
+FOVδ2 = [a⃗[1], a⃗[1] + ê2[1]], [a⃗[2], a⃗[2] + ê2[2]]
 
 # ╔═╡ a45f3a30-87fe-11eb-3fd7-bfecd9fe8838
 begin
 	plot(oa⃗, label="a⃗", leg=:topleft)
-	plot!(FOVδ, label="FOV", lw=3)
+	plot!(FOVδ1, label="FOV", lw=3)
 	plot!(a⃗â, label="â", ls=:dash)
 	plot!(a⃗p̂, label="p̂", lw=3)
 	plot!(ob⃗, label="b⃗⃗")
@@ -161,13 +164,13 @@ end
 
 # ╔═╡ cb0b7f64-880c-11eb-1868-15b287bb6950
 begin
-	plot(a⃗â, label="â", leg=:bottomleft, ls=:dash, title="Is this correct? cos(π/2 - ϕ) < cosγ = ĉ⋅p̂ ")
-	plot!(FOVδ, label="FOV", lw=3)
+	plot(a⃗â, label="â", leg=:bottomleft, ls=:dash)
+	plot!(FOVδ2, label="FOV", lw=3)
 	plot!(a⃗p̂, label="p̂", lw=3)
 	plot!(a⃗ĉ, label="ĉ", lw=3, ls=:dash)
 	plot!(horiz, label="horizon", c=:darkgray)
 	annotate!([
-			   (3.8, 3.8, Plots.text("â")),
+			   (3.73, 3.74, Plots.text("â")),
 			   (4.05, 3.07, Plots.text("ĉ")),
 			   (4.05, 3.35, Plots.text("p̂")),
 			   (3.2, 3.13, Plots.text("δ")),
@@ -175,6 +178,18 @@ begin
 			   (3.45, 3.09, Plots.text("γ")),
 			])
 end
+
+# ╔═╡ 1678bbbe-8813-11eb-383f-fdbed7524404
+L"\vec{p} = R(\delta)\vec{a}"
+
+# ╔═╡ 5e79dc36-8813-11eb-14ca-f96b45a4d139
+L"\hat{p} = \frac{\vec{p}}{||p||}"
+
+# ╔═╡ de725702-8812-11eb-2718-858e1c59efca
+L"cos(\gamma) = \hat{c}\cdot\hat{p}"
+
+# ╔═╡ 9f4395fc-8812-11eb-364a-6f8ecaef74f7
+L"\textrm{Visibility condition:}~~ cos\left(\phi\right) < cos(\gamma)~~??"
 
 # ╔═╡ b1d74c7a-8803-11eb-2ae7-519caaeba288
 md"### Try a test"
@@ -196,14 +211,15 @@ function vizible(satvec, radvec, δ, ϕ)
 	radrot = rotate(radvec, δ)
 	cosγ = dot(diff/norm(diff), radrot/norm(radrot))
 
-    return cos(ϕ) < cosγ
+#    return cosγ < cos(ϕ)
+	return cos(ϕ) < cosγ
 end	
 
 # ╔═╡ 5d898e82-880e-11eb-2f4e-0fefa69ef21e
 md"##### Example from SatelliteToolbox for largest possible θ"
 
-# ╔═╡ a6b291f8-8804-11eb-2503-cdf5b64614c1
-vizible(b⃗, a⃗, 0, deg2rad(42.51044708))  # Example using SatelliteToolbox and zenith
+# ╔═╡ f5b78e5e-8813-11eb-2567-2bbd706b051e
+vizible(b⃗, a⃗, 0, ϕ)  # should be false
 
 # ╔═╡ 7c37c4ba-880e-11eb-07e4-9756532c00d0
 md"""
@@ -254,12 +270,17 @@ vizible(b⃗, a⃗, δ, ϕ) #deg2rad(12.51045)) # should be true
 # ╠═1cbbd4fa-8801-11eb-1934-e1cb9be870b9
 # ╠═6d0cd152-8801-11eb-2448-6f2d419d6689
 # ╠═bebd3b56-8801-11eb-0975-9f86f71994d0
-# ╠═a45f3a30-87fe-11eb-3fd7-bfecd9fe8838
-# ╠═cb0b7f64-880c-11eb-1868-15b287bb6950
+# ╠═346efcbc-8815-11eb-1c36-ddd213c1d64d
+# ╟─a45f3a30-87fe-11eb-3fd7-bfecd9fe8838
+# ╟─cb0b7f64-880c-11eb-1868-15b287bb6950
+# ╟─1678bbbe-8813-11eb-383f-fdbed7524404
+# ╟─5e79dc36-8813-11eb-14ca-f96b45a4d139
+# ╟─de725702-8812-11eb-2718-858e1c59efca
+# ╟─9f4395fc-8812-11eb-364a-6f8ecaef74f7
 # ╟─b1d74c7a-8803-11eb-2ae7-519caaeba288
 # ╠═d63ebf76-8803-11eb-0865-afd0513096df
 # ╟─5d898e82-880e-11eb-2f4e-0fefa69ef21e
-# ╠═a6b291f8-8804-11eb-2503-cdf5b64614c1
+# ╠═f5b78e5e-8813-11eb-2567-2bbd706b051e
 # ╟─7c37c4ba-880e-11eb-07e4-9756532c00d0
 # ╠═460da59a-880e-11eb-2646-596a02b5be9d
 # ╠═de854212-880e-11eb-1673-29873c263d58
