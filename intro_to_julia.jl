@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.20
+# v0.12.21
 
 using Markdown
 using InteractiveUtils
@@ -36,14 +36,44 @@ html"<button onclick=present()>Present</button>"
 # ╔═╡ 8363f966-6c8a-11eb-0485-b39bfa77d265
 md"# Exploring the Julia  Language"
 
+# ╔═╡ 050d8af6-921a-11eb-3ae2-23845d02b6a9
+br
+
+# ╔═╡ 007fdd68-921a-11eb-1a21-3d505f0541b0
+md"### This notebook is available on Github!
+#### [https://github.com/mihalybaci/pluto_notebooks](https://github.com/mihalybaci/pluto_notebooks)
+"
+
+# ╔═╡ b681e152-8e31-11eb-37a1-73d640a225b0
+md"""
+# Julia v1.6.0 released on 25 March 2021!
+### Notable updates
+_____________________
+#### Parallel precompilation*
+#### Pre-compilation at install, not first run
+#### Reduced recompilation
+#### Reduced compiled latency
+#### Faster binary loading
+#### Improved networking features*
+"""
+
+# ╔═╡ 47cda722-9187-11eb-3126-f5edb8b1057e
+br
+
+# ╔═╡ 492e55c8-9187-11eb-08c1-418da2d63ba1
+md"### Get download Julia today!
+##### [https://julialang.org/downloads](https://julialang.org/downloads)
+"
+
 # ╔═╡ 08c78d78-6b04-11eb-3ee2-a9409610de2f
 md"""# Learn Julia from the Masters
 ### Online, instructor-led courses from Julia Computing, Inc.
 
 #### **Introduction to Julia:** TBD, \$250
-#### **Introduction to ML and AI:** 11-12 March 2021, \$500
+#### **Introduction to ML and AI:** TBD, \$500
 #### **Parallel Computing in Julia:** 8-9 April 2021, \$500
 
+#### [https://juliacomputing.com/training](https://juliacomputing.com/training)
 """
 
 # ╔═╡ 5060703e-6712-11eb-21c7-4f43e45d33d4
@@ -55,7 +85,7 @@ md"# JuliaCon 2021
 
 ### **Cost**: FREE
 
-### **Registration**: https://juliacon.org/2021/"
+### **Registration**: [https://juliacon.org/2021/](https://juliacon.org/2021/)"
 
 # ╔═╡ 03c3bf38-6493-11eb-1cd2-4bcf96696f89
 md"""
@@ -67,6 +97,7 @@ md"""
 - #### Bye, bye OOP! Hello Multiple dispatch!
 - #### Unbeatable interoperability
 - #### 5000+ registered packages (2000+ new since March 2020)
+- #### It has its own [font](https://cormullion.github.io/pages/2020-07-26-JuliaMono/#unicode_coverage)!!!
 """
 
 # ╔═╡ d3220a8c-6495-11eb-0c22-0d1b450c91f1
@@ -127,16 +158,16 @@ md"""
 - FORTRAN
 - Julia
 
-##### In 2017, the Celeste astronomical image analysis project (writtin in Julia) reached 1.54 petaFLOPS on the Knights Landing supercomputer."""
+##### In 2017, the Celeste astronomical image analysis project (writtin in Julia) reached 1.54 petaFLOPS on the Knights Landing supercomputer at LBNL."""
 
 # ╔═╡ 9b7ee436-751d-11eb-1ffe-bd3f35127821
 bigbr
 
 # ╔═╡ 0dda3e88-7510-11eb-3ebc-310d68675c2d
 md"""### A final note on benchmarks
-#### Dr. Steven Johnson, MIT Professor and creator of FFTW
+#### Dr. Steven Johnson, MIT Professor, creator of FFTW, and Julia contributor.
 
-##### Excerpts from a [post](https://discourse.julialang.org/t/julias-applicable-context-is-getting-narrower-over-time/55042/40) on Julia Discourse. 
+##### Excerpt from a [post](https://discourse.julialang.org/t/julias-applicable-context-is-getting-narrower-over-time/55042/40) on  the Julia Discourse forums. 
 
 >It’s impressive that it’s possible to beat optimized C libraries in certain cases with native Julia code, but focusing too much on such cases will often lead people astray...
 >
@@ -146,6 +177,13 @@ md"""### A final note on benchmarks
 >
 >This is important for those of us who want to work on new problems and to go beyond endlessly recycling the solutions of the past.
 """
+
+# ╔═╡ 8a1ca72c-921f-11eb-022a-e937aac3fb66
+br
+
+# ╔═╡ d790b994-921f-11eb-1405-0dcfd94d38e2
+md"#### See also: 
+##### ['Adventures in Code Generation'](https://www.youtube.com/watch?v=mSgXWpvQEHE&list=PLP8iPy9hna6StY9tIJIUN3F_co9A0zh0H&index=5) metaprogramming presentation from  JuliaCon 2019 on YouTube"
 
 # ╔═╡ b5fd4c3e-7118-11eb-2195-f776f9922342
 hr
@@ -317,7 +355,7 @@ md"
  - Increases code clarity (IMHO)
  - Just makes more sense (IMHO)
 
-Watch [The Unreasonable Effectivness of Multiple Dispatch](https://youtu.be/kc9HwsxE1OY) for more information.
+Watch [The Unreasonable Effectivness of Multiple Dispatch](https://youtu.be/kc9HwsxE1OY) on YouTube for more information.
 "
 
 # ╔═╡ 98336ce6-7119-11eb-1ac5-f5f3bd8f75da
@@ -356,7 +394,7 @@ ccall(:clock, Int32, ())
 s = "The Julia programming language rocks!"
 
 # ╔═╡ 07b47076-6c70-11eb-3e80-b1783abb82fc
-Int(@ccall strlen(s::Cstring)::Csize_t)
+@ccall strlen(s::Cstring)::Csize_t
 
 # ╔═╡ ace5815a-64ae-11eb-2fcd-dbe033e24d64
 # This code prints the current of SHELL
@@ -489,13 +527,15 @@ bigbr
 
 # ╔═╡ 4f914b28-6577-11eb-307e-d3fcb5d7090b
 md"
-### Package Spotlight: SatelliteToolbox"
+### Package Spotlight: SatelliteToolbox
+#### [Julia and Amazonia-1](https://discourse.julialang.org/t/julia-and-the-satellite-amazonia-1/57541)
+"
 
 # ╔═╡ 65661654-6577-11eb-3a2a-cd07152d69ee
 md"#### Estimate satellite positions: Matlab vs Julia vs Python
 - 196 satellites
 - Use the SGP4 propagator
-- Time range of 24 hours into the past.
+- Time range of 24 hours
 - Estimate the oribital elements and positions every 15 seconds
 "
 
@@ -732,7 +772,7 @@ bigbr
 bigbr
 
 # ╔═╡ 75512cd4-657e-11eb-2640-87279ba81927
-c = @benchmark threaded_orbits(tles, time_steps)  # 173.77 ms lowest time
+c = @benchmark threaded_orbits(tles, time_steps)  
 
 # ╔═╡ eaef6282-7119-11eb-1530-33b741097913
 br
@@ -759,19 +799,17 @@ md"""
 # ╔═╡ cf952cda-7119-11eb-2236-218a27d8e1ac
 hr
 
-# ╔═╡ d5d30458-7119-11eb-17c1-e92c27e11eb9
-md"""# Try Julia today! 
-#### https://julialang.org
-#### This notebook available here: 
-#### https://github.com/mihalybaci/pluto_notebooks
-"""
-
 # ╔═╡ Cell order:
 # ╠═f85eb8ca-649c-11eb-19bb-99e1a83e459b
 # ╠═2055d28c-649d-11eb-3b12-639929fff5fa
 # ╠═91f08860-7118-11eb-304f-298cb1a9d953
 # ╟─f499ecb4-6492-11eb-19c2-43bda1cf2a0c
 # ╟─8363f966-6c8a-11eb-0485-b39bfa77d265
+# ╟─050d8af6-921a-11eb-3ae2-23845d02b6a9
+# ╟─007fdd68-921a-11eb-1a21-3d505f0541b0
+# ╟─b681e152-8e31-11eb-37a1-73d640a225b0
+# ╟─47cda722-9187-11eb-3126-f5edb8b1057e
+# ╟─492e55c8-9187-11eb-08c1-418da2d63ba1
 # ╟─08c78d78-6b04-11eb-3ee2-a9409610de2f
 # ╟─5060703e-6712-11eb-21c7-4f43e45d33d4
 # ╟─03c3bf38-6493-11eb-1cd2-4bcf96696f89
@@ -794,6 +832,8 @@ md"""# Try Julia today!
 # ╟─a7d1d688-64b2-11eb-3c21-159fe6996ff1
 # ╟─9b7ee436-751d-11eb-1ffe-bd3f35127821
 # ╟─0dda3e88-7510-11eb-3ebc-310d68675c2d
+# ╟─8a1ca72c-921f-11eb-022a-e937aac3fb66
+# ╟─d790b994-921f-11eb-1405-0dcfd94d38e2
 # ╟─b5fd4c3e-7118-11eb-2195-f776f9922342
 # ╟─44df4210-6c76-11eb-068c-e94d426035e3
 # ╟─f2cb36de-6c76-11eb-08de-4def5529ca57
@@ -858,7 +898,7 @@ md"""# Try Julia today!
 # ╟─5fd01a92-7070-11eb-31fb-898d900d3b0e
 # ╟─4a10470e-711f-11eb-051a-f95adb23ca5b
 # ╟─82081be6-7070-11eb-176c-bd1e2329373e
-# ╠═500dee00-7072-11eb-2a44-dd95d512fd0a
+# ╟─500dee00-7072-11eb-2a44-dd95d512fd0a
 # ╟─de96f62c-7073-11eb-22a8-b525bb1efd7f
 # ╟─d3cdb9e2-7073-11eb-0753-8bf123599cac
 # ╠═5156ee2e-7074-11eb-214a-33b40fbcb440
@@ -896,4 +936,3 @@ md"""# Try Julia today!
 # ╟─911847b4-7075-11eb-20ef-715b719f94f4
 # ╟─7511a470-7075-11eb-123e-eb2c888210ec
 # ╟─cf952cda-7119-11eb-2236-218a27d8e1ac
-# ╟─d5d30458-7119-11eb-17c1-e92c27e11eb9

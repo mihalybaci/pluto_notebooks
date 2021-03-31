@@ -20,9 +20,7 @@ begin
 	# Activate the temporary environment
 	Pkg.activate(mktempdir())
 	# Add the packages (downloading them if necessary)
-	Pkg.add(["CSV", "DataFrames", "Dates", "PooledArrays", "Plots", "PlutoUI", "VegaLite", "VegaDatasets"])
-	# Add a specific version of DataAPI to avoid changes that break CSV in Pluto
-	Pkg.add(name="DataAPI", version="1.4")
+	Pkg.add(["CSV", "DataFrames", "Dates", "Plots", "PlutoUI", "VegaLite", "VegaDatasets"])
 	# Load the packages
 	using CSV 
 	using DataFrames
@@ -34,8 +32,68 @@ begin
 	using VegaDatasets
 end
 
+# ╔═╡ 11b6f756-921a-11eb-1623-7d59b0eacc37
+br = HTML("<br>");  # Add a semi-colon to block the output
+
+# ╔═╡ 869489e0-8d61-11eb-158a-b72ed06a72bc
+html"<button onclick=present()>Present</button>"
+
+# ╔═╡ 0466536c-8d60-11eb-26a3-b3ee18f9def3
+md"# JuliaCon 2021
+
+### **Location**: Everywhere on Earth
+
+### **Date**: 28 -- 30 July 2021
+
+### **Cost**: FREE
+
+### **Registration**: https://juliacon.org/2021/"
+
+# ╔═╡ 040cf9c2-8e30-11eb-2ada-cfd94f33f549
+md"""
+# Julia v1.6 was released on March 25ᵗʰ!
+### Notable updates
+_____________________
+#### Parallel precompilation*
+#### Pre-compilation at install, not first run
+#### Reduced recompilation
+#### Reduced compiled latency
+#### Faster binary loading
+#### Improved networking features*
+"""
+
+# ╔═╡ e9e23032-8d60-11eb-2398-f91242fb3c17
+md"# Learning Data Science in Julia"
+
+# ╔═╡ 2ae29774-8d64-11eb-2b5f-439867054365
+md"
+### From Julia Academy [(http://juliaacademy.com)](http://juliaacademy.com): 
+#### Introduction to DataFrames.jl
+#### Julia for Data Science
+#### Foundations of Machine Learning
+#### Deep Learning with Flux
+#### The World of Machine Learning with Knet
+"
+
+# ╔═╡ 3c4cac24-8d63-11eb-206c-751e06065314
+html"""<hr style="border: 1px dashed">"""
+
+# ╔═╡ 0cbf869c-8d64-11eb-2cf1-8d9691e28094
+md"### Data Science Hackers webbook: 
+#### [https://datasciencejuliahackers.com/](https://datasciencejuliahackers.com/)"
+
 # ╔═╡ ebb3989e-2b43-11eb-1b42-355ccf52223d
 md"# Exploring COVID Cases with Julia"
+
+# ╔═╡ eded10b2-9219-11eb-22f1-fd73bea5058a
+br
+
+# ╔═╡ 940b688c-9219-11eb-0f5b-e7248ace8146
+md"#### All notebooks available at 
+#### [https://github.com/mihalybaci/pluto_notebooks](https://github.com/mihalybaci/pluto_notebooks)"
+
+# ╔═╡ 5b065066-8d61-11eb-370b-317f5e1dcfb0
+md"## Load environment, get data, set up functions"
 
 # ╔═╡ 31ee5dc6-2903-11eb-1a98-63b264ae3e60
 us_url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
@@ -97,20 +155,20 @@ md"""### Chose Attributes
 md"""**End date** 
 $(@bind stop_ind Slider(start_ind:length(dates), default=length(dates)))"""
 
+# ╔═╡ 532f0cf2-921a-11eb-1004-c71928b38711
+difference(data) = [data[i] - data[i-1] for i = 2:length(data)];
+
+# ╔═╡ 5803b06e-921a-11eb-33d1-d5350e6549ba
+boxcar(data, N::Int) = (N > 1) ? [mean(data[i-N:i]) for i = N+1:length(data)] : data;
+
+# ╔═╡ 5ae28a58-921a-11eb-20f9-f54f015ff652
+MyType = Union{T, Missing} where T <: Real;  # Use MyType to Allow Missing Values
+
 # ╔═╡ 52c3d7fa-3644-11eb-2d71-653aef1e09b1
 state_cases_all = [by_state(the_states[n], covid_confirmed_us) for n = 1:length(the_states)];  # Separating these to reduce the computations when interacting with the plot
 
 # ╔═╡ 238ce10a-364b-11eb-24de-b11a4bebde06
 state_cases_range = [state_cases_all[i][start_ind:stop_ind, :] for i = 1:length(state_cases_all)];
-
-# ╔═╡ f6f4df1a-2b64-11eb-2b8f-99a35393a597
-difference(data) = [data[i] - data[i-1] for i = 2:length(data)]
-
-# ╔═╡ 08d1eac2-2b65-11eb-0c70-7d4136cf8180
-boxcar(data, N::Int) = (N > 1) ? [mean(data[i-N:i]) for i = N+1:length(data)] : data
-
-# ╔═╡ 5cdd3736-2b68-11eb-0e1e-dbe2f7dcd088
-MyType = Union{T, Missing} where T <: Real  # Use MyType to Allow Missing Values
 
 # ╔═╡ b0745148-2a68-11eb-084c-310c312b32ad
 let
@@ -158,7 +216,7 @@ let
 		ylimits[2] = (ylimits[2] ≤ 0) ? 2 : ylimits[2]
 	end
 
-	plot(state_plots, ylimit=ylimits)
+	plot(state_plots, ylimit=ylimits, ylabel="Cases")
 end
 
 # ╔═╡ cb24dd58-2d88-11eb-23ab-59a1a869132c
@@ -171,7 +229,7 @@ function by_county(county, state, us_data)
 	dates_fmt = get_dates(covid_confirmed_us, :date)
 	cases_date = [county_df[1, dates_string[i]] for i = 1:length(dates_string)]
 	return DataFrame(:Date => dates_fmt, :Cases => cases_date)
-end
+end;
 
 # ╔═╡ df792c14-2d88-11eb-3286-5f53f927e546
 md"### Pick a State"
@@ -290,7 +348,7 @@ md"# Some maps!"
 md"### All maps use the VegaLite package"
 
 # ╔═╡ 1ce84bf0-365f-11eb-252c-197607715a76
-us10m = dataset("us-10m")
+us10m = dataset("us-10m");
 
 # ╔═╡ 5728b2e0-38a9-11eb-2dad-3503868cdf35
 alt_names = [replace(name, "/" => "_") for name in names(covid_confirmed_us)[12:end]];
@@ -314,9 +372,6 @@ end;
 
 # ╔═╡ 3649c522-776b-11eb-171b-3bfd793616b4
 date_data = date_frame(covid_confirmed_us);
-
-# ╔═╡ e8c61394-389c-11eb-2d16-0dba3f130ed0
-
 
 # ╔═╡ 6331c9b2-3892-11eb-10b4-d7309d028703
 function usa_plot(the_data, column)
@@ -360,18 +415,29 @@ function usa_plot(the_data, column)
 		color={column*":q",
 			scale={domain=[0, 5], scheme="reds"}}
 	)
-end
+end;
 
 # ╔═╡ e0d58c2a-6491-11eb-0d32-e5d18873d26a
-md"### WARNING: UPDATING THIS MAP IS A LITTLE SLOW!"
+md"### WARNING: UPDATING THIS MAP IS A BIT SLOW!"
 
 # ╔═╡ 70e8bcb8-3965-11eb-000c-55bbe767b98f
 md"""
 **Date** $(@bind ind_usa Slider(1:(length(date_data[1,12:end])), default=(length(date_data[1, 12:end])))) 
-"""
+""";
 
 # ╔═╡ 540552aa-38b1-11eb-0d10-47125198dd3c
-usa_plot(date_data, alt_names[ind_usa])
+usa_plot(date_data, alt_names[end])
+
+# ╔═╡ a59fc2c0-8d62-11eb-33b4-05ee116a0be4
+function select_states(data, states)
+	indices = zeros(Int, length(date_data.Province_State))
+	for state in states
+		indices += date_data.Province_State .== state
+	end
+	@assert unique(indices) ∈ ([0], [1], [0, 1], [1, 0])  " If an index ∉ (0, 1), then something is wrong"
+	
+	return Bool.(indices)
+end;
 
 # ╔═╡ f34335d4-38b7-11eb-338f-19d210a15f60
 md"""### States to Map
@@ -411,24 +477,24 @@ function show_map(the_data, column)
 		color={column*":q",
 			scale={domain=[0, 5], scheme="reds"}}
 	)
-end
-
-# ╔═╡ f8ec989e-395d-11eb-246e-05d59a63db16
-function select_states(data, states)
-	indices = zeros(Int, length(date_data.Province_State))
-	for state in states
-		indices += date_data.Province_State .== state
-	end
-	@assert unique(indices) ∈ ([0], [1], [0, 1], [1, 0])  " If an index ∉ (0, 1), then something is wrong"
-	
-	return Bool.(indices)
-end
+end;
 
 # ╔═╡ 209630d6-38a9-11eb-18ec-855a833905b3
 show_map(date_data[select_states(date_data, states_to_map), :], alt_names[ind])
 
 # ╔═╡ Cell order:
+# ╠═11b6f756-921a-11eb-1623-7d59b0eacc37
+# ╟─869489e0-8d61-11eb-158a-b72ed06a72bc
+# ╟─0466536c-8d60-11eb-26a3-b3ee18f9def3
+# ╠═040cf9c2-8e30-11eb-2ada-cfd94f33f549
+# ╟─e9e23032-8d60-11eb-2398-f91242fb3c17
+# ╟─2ae29774-8d64-11eb-2b5f-439867054365
+# ╟─3c4cac24-8d63-11eb-206c-751e06065314
+# ╟─0cbf869c-8d64-11eb-2cf1-8d9691e28094
 # ╟─ebb3989e-2b43-11eb-1b42-355ccf52223d
+# ╟─eded10b2-9219-11eb-22f1-fd73bea5058a
+# ╟─940b688c-9219-11eb-0f5b-e7248ace8146
+# ╟─5b065066-8d61-11eb-370b-317f5e1dcfb0
 # ╠═907776a8-648e-11eb-00c2-4d1e34a543e0
 # ╠═31ee5dc6-2903-11eb-1a98-63b264ae3e60
 # ╠═47d408a4-2903-11eb-34ef-85edab54f790
@@ -443,11 +509,11 @@ show_map(date_data[select_states(date_data, states_to_map), :], alt_names[ind])
 # ╟─d7b24d3e-2b3b-11eb-022f-7bb38bdcc775
 # ╟─75d1293c-2b40-11eb-20f7-f3ea15093f20
 # ╟─b0745148-2a68-11eb-084c-310c312b32ad
+# ╟─532f0cf2-921a-11eb-1004-c71928b38711
+# ╟─5803b06e-921a-11eb-33d1-d5350e6549ba
+# ╟─5ae28a58-921a-11eb-20f9-f54f015ff652
 # ╟─52c3d7fa-3644-11eb-2d71-653aef1e09b1
 # ╟─238ce10a-364b-11eb-24de-b11a4bebde06
-# ╠═f6f4df1a-2b64-11eb-2b8f-99a35393a597
-# ╠═08d1eac2-2b65-11eb-0c70-7d4136cf8180
-# ╠═5cdd3736-2b68-11eb-0e1e-dbe2f7dcd088
 # ╟─cb24dd58-2d88-11eb-23ab-59a1a869132c
 # ╟─e8a18338-2d8b-11eb-0ce6-2d4c7f9f20bd
 # ╟─df792c14-2d88-11eb-3286-5f53f927e546
@@ -462,18 +528,17 @@ show_map(date_data[select_states(date_data, states_to_map), :], alt_names[ind])
 # ╟─a84aa814-364b-11eb-0e4d-9748b8b24a12
 # ╟─0896dc34-365f-11eb-25c7-bd720f55b31d
 # ╟─eddf43c0-776a-11eb-0521-336765a7a312
-# ╠═1ce84bf0-365f-11eb-252c-197607715a76
+# ╟─1ce84bf0-365f-11eb-252c-197607715a76
 # ╟─5728b2e0-38a9-11eb-2dad-3503868cdf35
 # ╟─cafbdd70-38a0-11eb-03a4-1124bfdd9dc3
 # ╟─3649c522-776b-11eb-171b-3bfd793616b4
-# ╟─e8c61394-389c-11eb-2d16-0dba3f130ed0
 # ╟─6331c9b2-3892-11eb-10b4-d7309d028703
 # ╟─e0d58c2a-6491-11eb-0d32-e5d18873d26a
 # ╟─70e8bcb8-3965-11eb-000c-55bbe767b98f
-# ╠═540552aa-38b1-11eb-0d10-47125198dd3c
+# ╟─540552aa-38b1-11eb-0d10-47125198dd3c
+# ╟─a59fc2c0-8d62-11eb-33b4-05ee116a0be4
 # ╟─f34335d4-38b7-11eb-338f-19d210a15f60
 # ╟─791350fa-38b7-11eb-1431-cba8440b6af2
 # ╟─5aafc1c0-38a8-11eb-13b1-350b67a918e4
 # ╟─209630d6-38a9-11eb-18ec-855a833905b3
 # ╟─31629ca8-38a9-11eb-156b-21ce93990fbc
-# ╟─f8ec989e-395d-11eb-246e-05d59a63db16
