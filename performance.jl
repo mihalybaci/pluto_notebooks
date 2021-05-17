@@ -8,7 +8,7 @@ using InteractiveUtils
 begin
 	import Pkg
 	Pkg.activate(mktempdir())
-	Pkg.add(["BenchmarkTools", "FFTW", "PlutoUI", "Plots", "Profile", "PyCall"])
+	Pkg.add(["BenchmarkTools", "Conda", "Images", "PlutoUI", "Plots", "Profile", "PyCall"])
 end
 
 # ╔═╡ 9bc9ce04-4df3-4336-a412-867bf892489e
@@ -23,18 +23,20 @@ using LinearAlgebra
 # ╔═╡ d3f56a61-2745-4e85-8a10-9e2bb027b309
 using Plots
 
+# ╔═╡ a7bd375e-14e9-4971-85b0-a8f49447cc98
+using Conda
+
 # ╔═╡ 1ba28924-33dc-458c-96f1-80db64563e15
 using PyCall
 
+# ╔═╡ e16506f2-fea3-4678-b95f-3d78da5c7193
+using .Threads
+
+# ╔═╡ 2d6cce0d-cf01-4065-8a90-b35f5135ae34
+using Images
+
 # ╔═╡ 2e11c9de-677e-4a1d-b6e9-b87421ab4db9
 br = HTML("<br>");  # Add a semi-colon to block the output
-
-# ╔═╡ 6e1c9346-72ac-476a-80bc-a68f52cad0c5
-function printit(val)
-	io = IOBuffer()
-	print(io, val)
-	String(take!(io))
-end
 
 # ╔═╡ e7fdca5f-a467-4f17-b2e7-2b7365b58fe2
 html"<button onclick=present()>Present</button>"
@@ -117,6 +119,32 @@ with_terminal() do
     Profile.print()
 end
 
+# ╔═╡ 8e246e00-c3dd-4456-929e-3069f0940a7e
+md"### A quick digression on macros"
+
+# ╔═╡ 4561711e-7c55-458e-baf9-00d03c515f30
+@macroexpand @benchmark sin(1)
+
+# ╔═╡ 4e87ab75-cdd5-471b-98de-79a36dfa9fd4
+macro sayhello(name)
+	return :( println("Hello ", $name) )
+end
+
+# ╔═╡ 84ed1cac-31f1-474e-801d-8da6bb069d53
+@sayhello "Bob"
+
+# ╔═╡ 85ce8b95-237d-49ad-af48-b034faa2b74c
+macro terminal(stuff)
+	quote
+		with_terminal() do
+			$stuff
+		end
+	end
+end
+
+# ╔═╡ 5b2acdb5-0da7-4bf8-9270-d249ea258659
+@terminal Profile.print()
+
 # ╔═╡ 951c9498-c080-48b7-bea7-b9b5e14a518a
 md"""
 ## Avoid Global Variables
@@ -194,10 +222,8 @@ pos1(x) = x < 0 ? 0 : x
 # ╔═╡ ae07a63f-147a-4ef5-a110-550a400162a6
 pos2(x) = x < 0 ? zero(x) : x
 
-# ╔═╡ 72f73fce-4e72-4979-bfe0-c93a0caabcd0
-with_terminal() do 
-	println(@code_warntype pos1(1.0))
-end
+# ╔═╡ 45e8c600-9e0d-4e6a-a15c-57a98ef06990
+@terminal @code_warntype pos1(1.0)
 
 # ╔═╡ b1567924-6511-4f38-810d-edb2fc41247d
 with_terminal() do 
@@ -435,14 +461,17 @@ end
     return s
 end
 
+# ╔═╡ fb9f3b2b-d9bd-43d6-9b48-65caeb202e76
+@terminal versioninfo()
+
 # ╔═╡ 8ae3a333-091f-4cc6-ab7d-52172336404e
 xarr, yarr = randn(2048), randn(2048)
 
 # ╔═╡ 75510369-5918-49dd-8c11-0e1140ef56ec
-@benchmark inner($xarr, $yarr)
+@benchmark inner($xarr, $yarr)  # Home computer - 1.6 μs
 
 # ╔═╡ b5b886f2-84c7-46e1-9951-61a724864d0b
-@benchmark innersimd($xarr, $yarr)
+@benchmark innersimd($xarr, $yarr)  # home computer - 193 ns
 
 # ╔═╡ ca15416c-a428-4867-8355-b9f254dd3c41
 function gflops(n, reps)
@@ -469,7 +498,7 @@ function gflopssimd(n, reps)
 end
 
 # ╔═╡ 052bfbb7-18ae-4a9a-86c2-a07f30dbcfbe
-xs = [n for n = 8:32:32*64]
+xs = [n for n = 32:32:32*64]
 
 # ╔═╡ 2189672f-49d3-4731-96bc-f09c3c1495fa
 repeat = 2000
@@ -486,42 +515,80 @@ begin
 	plot!(xs, zs, label="simd")
 end
 
+# ╔═╡ 663cf1ce-e8b5-4174-a55b-10785e1702a7
+md"[Home performance](https://github.com/mihalybaci/pluto_notebooks/blob/main/images/gflops_simd.png)"
+
 # ╔═╡ 3def55ef-bfa8-491f-b4d9-4a51c75f8bf5
 md"""## Vectorize?
 
 ### Python and R benefit from vectorization. 
 """
 
-# ╔═╡ 2030c580-b273-4b69-8eea-69e281ead650
-begin 
+# ╔═╡ f1519cc1-4d8d-458e-947f-cbbdb4bdf82a
+function conda_setup()
+	with_terminal() do
+		Conda.pip_interop(true)
+		Conda.pip("install", "numpy")
+	end
+end
+
+# ╔═╡ 19b23f6b-9c9c-4bc4-9b35-b33202dbfd94
+conda_setup()
+
+# ╔═╡ 86f536ec-b796-4384-93b8-d49aa0f9c9b3
+begin
 py"""
+import timeit
 import numpy as np
 
-def loop():
-	x = np.zeros(100)
+loopset = '''\
+import numpy as np
+
+a = np.zeros(100)
+
+def loop(x):
 	for i in range(100):
 		x[i] = np.sin(i)
 	return x
-"""
-@benchmark py"loop"()  # Done within Python: 94 μs
-end
+'''
 
-# ╔═╡ 8e8fa211-c750-4dac-ab08-5226382b1880
-begin 
-py"""
+vecset = '''\
 import numpy as np
 
-def bar():
-	return np.sin(range(100))
+a = np.arange(100)
+
+def vect(x):
+    return np.sin(x)
+'''
+
+
+stmnt = '''f(a)'''
+
+def times():
+	loop_time = np.min(timeit.repeat('''loop(a)''', setup=loopset, number=1, repeat=1000))*1e6
+	vec_time = np.min(timeit.repeat('''vect(a)''', setup=vecset, number=1, repeat=1000))*1e6
+
+	return loop_time, vec_time
+
+times()
 """
-@benchmark py"bar"()  # Done within Python: 1.54 μs
+times = py"times"();
 end
+
+# ╔═╡ 1c351d88-15c8-420e-8391-263a59510d73
+md"""
+#### The `loop` takes $(round(times[1], digits=2)) μs.
+#### The `vect` takes $(round(times[2], digits=2)) μs.
+"""
 
 # ╔═╡ 55175908-3256-41dc-8268-cbf37c159123
 np = pyimport("numpy")
 
 # ╔═╡ dd16b419-c2f9-4d52-9557-efc9ea52f68c
-@benchmark np.sin($(collect(1:100)))
+@benchmark np.sin($(collect(0:99)))
+
+# ╔═╡ adc94746-34dd-4c2e-b5b4-5ca749ba2179
+br
 
 # ╔═╡ 419cda5b-2c02-4b8a-9061-52d2c9302314
 md"### Julia loops are fast. No vectorization necessary."
@@ -547,10 +614,102 @@ end
 # ╔═╡ 22a2f880-b517-4771-8865-3dacdd7fcef3
 @benchmark bar()
 
+# ╔═╡ 1c0c5440-40c2-4eda-b1d9-5d7b19e3464e
+md"""
+## Parallelization
+
+### Running bottlenecks in parallel may offer significant speedups.
+"""
+
+# ╔═╡ 7ab2718c-2698-4163-b6b4-35e89ce9f470
+"""
+The Mandelbrot set escape time function
+"""
+function escapetime(z; maxiter=80)
+    c = z
+    for n = 1:maxiter
+        if abs(z) > 2
+            return n-1
+        end
+        z = z^2 + c
+    end
+    return maxiter
+end
+
+
+# ╔═╡ 81e08ca5-8ad8-4358-892e-eb833057de8f
+function mandel(; width=80, height=20, maxiter=80)
+    out = zeros(Int, height, width)
+    real = range(-2.0, 0.5, length=width)
+    imag = range(-1.0, 1.0, length=height)*im
+    for x in 1:width
+        for y in 1:height
+            z = real[x] + imag[y]
+            out[y,x] = escapetime(z, maxiter=maxiter)
+        end
+    end
+    return out
+end
+
+# ╔═╡ ff11fb18-7275-458d-b794-1d779afe49ae
+width = 600
+
+# ╔═╡ 3bc0ffa3-a570-4191-80ef-129a0bc0f779
+height = 450
+
+# ╔═╡ 991f71da-0bee-44cd-aea1-806efd233806
+maxiter = 600
+
+# ╔═╡ 864b3c20-4421-4c0d-9581-d0ba40fb6be0
+Gray.((mandel(width=width, height=height, maxiter=maxiter).%maxiter)./100)
+
+# ╔═╡ 5b1a5fdb-c92e-436e-9f2e-68e6857edf3c
+m = @benchmark mandel(width=width, height=height, maxiter=maxiter)
+
+# ╔═╡ 0268ce78-240f-461a-a247-7e594c43a5d2
+function mandelthread(; width=80, height=20, maxiter=80)
+    out = zeros(Int, height, width)
+    real = range(-2.0, 0.5, length=width)
+    imag = range(-1.0, 1.0, length=height)*im
+    @threads for x in 1:width
+        for y in 1:height
+            z = real[x] + imag[y]
+            out[y,x] = escapetime(z, maxiter=maxiter)
+        end
+    end
+    return out
+end
+
+# ╔═╡ ad4e69ab-0693-4a93-baef-4c30dac63468
+mt = @benchmark mandelthread(width=width, height=height, maxiter=maxiter)
+
+# ╔═╡ f0fd40e2-3f36-4f9e-af2a-eccb01a206c0
+function mandelspawn(; width=80, height=20, maxiter=80)
+    out = zeros(Int, height, width)
+    real = range(-2.0, 0.5, length=width)
+    imag = range(-1.0, 1.0, length=height)*im
+    @sync for x in 1:width
+        Threads.@spawn for y in 1:height
+            z = real[x] + imag[y]
+            out[y,x] = escapetime(z, maxiter=maxiter)
+        end
+    end
+    return out
+end
+
+# ╔═╡ 014a4163-f813-4061-8f70-494814e46209
+ms = @benchmark mandelspawn(width=width, height=height, maxiter=maxiter)
+
+# ╔═╡ 01c3e62e-2b69-456b-95a1-85aa3057ddff
+md"
+##### 1-thread: $(round(m.times[1]/1e6, digits=2)) ms
+##### $(nthreads())-threads: $(round(mt.times[1]/1e6, digits=2)) ms
+##### $(width*height)-tasks: $(round(ms.times[1]/1e6, digits=2)) ms
+"
+
 # ╔═╡ Cell order:
 # ╠═e4f55578-9bb5-11eb-2848-c9331b681a62
 # ╠═2e11c9de-677e-4a1d-b6e9-b87421ab4db9
-# ╠═6e1c9346-72ac-476a-80bc-a68f52cad0c5
 # ╟─e7fdca5f-a467-4f17-b2e7-2b7365b58fe2
 # ╟─98a65bee-c989-4edb-9f40-4c9962c94a8a
 # ╟─ad8afc2c-60a5-43a9-9896-d1c2d4b653ed
@@ -563,6 +722,12 @@ end
 # ╟─095acdf2-74e8-458c-94fe-8c335460fa9b
 # ╠═f9eab5cd-258d-4e6c-95bf-8d3f974e76bc
 # ╠═cab6e9be-ae86-4915-b90e-afc78d9f748a
+# ╟─8e246e00-c3dd-4456-929e-3069f0940a7e
+# ╠═4561711e-7c55-458e-baf9-00d03c515f30
+# ╠═4e87ab75-cdd5-471b-98de-79a36dfa9fd4
+# ╠═84ed1cac-31f1-474e-801d-8da6bb069d53
+# ╠═85ce8b95-237d-49ad-af48-b034faa2b74c
+# ╠═5b2acdb5-0da7-4bf8-9270-d249ea258659
 # ╟─951c9498-c080-48b7-bea7-b9b5e14a518a
 # ╠═5932d739-4183-4936-a5ac-a4e82d9164d3
 # ╠═52aba5be-b9c9-478a-8419-b52b3da1159c
@@ -579,7 +744,7 @@ end
 # ╟─577b843e-9cba-4133-a08c-47cec7efc840
 # ╠═e6b6229e-3288-4e68-bd7f-539221d6ac83
 # ╠═ae07a63f-147a-4ef5-a110-550a400162a6
-# ╠═72f73fce-4e72-4979-bfe0-c93a0caabcd0
+# ╠═45e8c600-9e0d-4e6a-a15c-57a98ef06990
 # ╠═b1567924-6511-4f38-810d-edb2fc41247d
 # ╠═653409f1-ed1c-4353-bb46-6a212276d9ad
 # ╠═1ba37d04-5887-4330-a3cd-1f199f312608
@@ -616,6 +781,7 @@ end
 # ╟─7605a28e-d632-48b5-8b03-fe0f8c3b66eb
 # ╠═69254f23-5349-4e99-9cdd-23183ad5404d
 # ╠═48597433-7a36-4c0e-af41-8ddb3c5db277
+# ╠═fb9f3b2b-d9bd-43d6-9b48-65caeb202e76
 # ╠═8ae3a333-091f-4cc6-ab7d-52172336404e
 # ╠═75510369-5918-49dd-8c11-0e1140ef56ec
 # ╠═b5b886f2-84c7-46e1-9951-61a724864d0b
@@ -627,14 +793,34 @@ end
 # ╠═d1e9259e-d214-4fe4-bc86-faa86344238b
 # ╠═d3f56a61-2745-4e85-8a10-9e2bb027b309
 # ╟─d6de32e4-92d3-4003-9d18-44bb0fd5cce0
+# ╟─663cf1ce-e8b5-4174-a55b-10785e1702a7
 # ╟─3def55ef-bfa8-491f-b4d9-4a51c75f8bf5
+# ╠═a7bd375e-14e9-4971-85b0-a8f49447cc98
+# ╠═f1519cc1-4d8d-458e-947f-cbbdb4bdf82a
+# ╠═19b23f6b-9c9c-4bc4-9b35-b33202dbfd94
 # ╠═1ba28924-33dc-458c-96f1-80db64563e15
-# ╠═2030c580-b273-4b69-8eea-69e281ead650
-# ╠═8e8fa211-c750-4dac-ab08-5226382b1880
+# ╠═86f536ec-b796-4384-93b8-d49aa0f9c9b3
+# ╟─1c351d88-15c8-420e-8391-263a59510d73
 # ╠═55175908-3256-41dc-8268-cbf37c159123
 # ╠═dd16b419-c2f9-4d52-9557-efc9ea52f68c
-# ╠═419cda5b-2c02-4b8a-9061-52d2c9302314
+# ╟─adc94746-34dd-4c2e-b5b4-5ca749ba2179
+# ╟─419cda5b-2c02-4b8a-9061-52d2c9302314
 # ╠═d7315f87-09fd-4bdc-a0ff-7137740dd323
 # ╠═6d1d57ae-82bc-473e-9da4-8e0f8827eb91
 # ╠═8b083abc-7234-4e7a-86c9-24ed41d53e5c
 # ╠═22a2f880-b517-4771-8865-3dacdd7fcef3
+# ╟─1c0c5440-40c2-4eda-b1d9-5d7b19e3464e
+# ╠═e16506f2-fea3-4678-b95f-3d78da5c7193
+# ╠═7ab2718c-2698-4163-b6b4-35e89ce9f470
+# ╠═81e08ca5-8ad8-4358-892e-eb833057de8f
+# ╠═ff11fb18-7275-458d-b794-1d779afe49ae
+# ╠═3bc0ffa3-a570-4191-80ef-129a0bc0f779
+# ╠═991f71da-0bee-44cd-aea1-806efd233806
+# ╠═2d6cce0d-cf01-4065-8a90-b35f5135ae34
+# ╠═864b3c20-4421-4c0d-9581-d0ba40fb6be0
+# ╠═5b1a5fdb-c92e-436e-9f2e-68e6857edf3c
+# ╠═0268ce78-240f-461a-a247-7e594c43a5d2
+# ╠═ad4e69ab-0693-4a93-baef-4c30dac63468
+# ╠═f0fd40e2-3f36-4f9e-af2a-eccb01a206c0
+# ╠═014a4163-f813-4061-8f70-494814e46209
+# ╟─01c3e62e-2b69-456b-95a1-85aa3057ddff
