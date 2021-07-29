@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.15.0
 
 using Markdown
 using InteractiveUtils
@@ -48,16 +48,14 @@ br
 
 # ╔═╡ e2b9a78e-9313-11eb-2899-b5354d00b10c
 md"""
-#### julialang.org - Julia language homepage
-#### juliacomputing.com - Julia language homepage
-#### juliahub.com - Julia language homepage
+#### [julialang.org](https://julialang.org) - Julia language homepage
+#### [juliacomputing.com](https://juliacomputing.com) - Julia language homepage
+#### [juliahub.com](https://juliahub.com) - Julia language homepage
 """
 
 # ╔═╡ b681e152-8e31-11eb-37a1-73d640a225b0
 md"""
-# Julia v1.6.0 released on 25 March 2021!
-### Notable updates
-_____________________
+# Julia v1.6 - Notable updates
 #### Parallel precompilation*
 #### Pre-compilation at install, not first run
 #### Reduced recompilation
@@ -68,11 +66,6 @@ _____________________
 
 # ╔═╡ 47cda722-9187-11eb-3126-f5edb8b1057e
 br
-
-# ╔═╡ 492e55c8-9187-11eb-08c1-418da2d63ba1
-md"### Get download Julia today!
-##### [https://julialang.org/downloads](https://julialang.org/downloads)
-"
 
 # ╔═╡ 03c3bf38-6493-11eb-1cd2-4bcf96696f89
 md"""
@@ -95,6 +88,9 @@ md"#### Base language only!"
 
 # ╔═╡ 80745e40-6498-11eb-2f82-d133e2d32f78
 load(download("https://raw.githubusercontent.com/mihalybaci/pluto_notebooks/main/images/julia_bench.png"))
+
+# ╔═╡ ed30741f-474c-4f88-bf90-b5fe3c008caa
+
 
 # ╔═╡ ea2b7858-649c-11eb-36a8-2f2670063bee
 bigbr
@@ -365,7 +361,7 @@ bigbr
 sayhello(name) = println("Hello, ", name, ".")
 
 # ╔═╡ 9960cea7-2e2a-4b7f-aaab-633ff0308bda
-sayhello("Bob")
+sayhello("Bob")  # prints to STDOUT
 
 # ╔═╡ 7bdb090a-50f8-4b86-9d82-77db15939b17
 br
@@ -396,7 +392,7 @@ hr
 # ╔═╡ 05b9366a-64ae-11eb-1535-63b2eb1a237c
 md"""
 ## Unparalleled interoperability
-### From within Julia is possible to use code from:
+### Import code from the following languages into Julia:
 - **C**
 - **FORTRAN**
 - C++
@@ -407,15 +403,13 @@ md"""
 - Octave
 - Mathematica
 - Objective-C
-"""
 
-# ╔═╡ 7fab76be-92e3-11eb-11cc-051b8bd8bbce
-br
+$br
 
-# ╔═╡ 7bfaadfa-92e3-11eb-39ca-89cb7e4fd8c1
-md"""### It also works the other way!
+### It also works the other way!
 - **pyjulia** - Run Julia within Python
 - **JuliaCall** - Run Julia within R
+
 """
 
 # ╔═╡ 010ee5f4-7135-11eb-2987-f34bb67004c1
@@ -563,7 +557,7 @@ md"#### Key points:
 
 - ##### There are multiple ways to interact with Python code
 - ##### It is possible to time python functions from Julia
-- ##### Sine calculations were $(round(1098/(time_sin.times[1]*1e-3), digits=2))x faster in Julia!
+- ##### Sine calculations were $(round(Int, 100*(pysintime - (time_sin.times[1]*1e-3))/(time_sin.times[1]*1e-3)))% faster in Julia!
 "
 
 # ╔═╡ a70a5e8c-7119-11eb-0ca5-ab74559db699
@@ -606,6 +600,15 @@ md"#### Estimate satellite positions: Matlab vs Julia vs Python
 - Time range of 24 hours
 - Estimate the oribital elements and positions every 15 seconds
 "
+
+# ╔═╡ 5fd01a92-7070-11eb-31fb-898d900d3b0e
+begin
+	mtime = 31.06
+	pytime= 1.54
+	jtime = 0.525
+
+	md"##### The Matlab time to beat is $mtime seconds."
+end
 
 # ╔═╡ 4eb669bd-8c69-4f5f-a574-76155df88c67
 br
@@ -650,11 +653,7 @@ np.min(timeit.repeat('vals(satellites, jd_bases, jd_rems)', setup=the_setup, num
 """
 
 # ╔═╡ 500dee00-7072-11eb-2a44-dd95d512fd0a
-begin
-	pytime = 1.54  # time on home computer
-	md"#### Python time to beat $(round(pytime, digits=2)) seconds."
-end
-
+md"#### Python time to beat $(round(pytime, digits=2)) seconds."
 
 # ╔═╡ de96f62c-7073-11eb-22a8-b525bb1efd7f
 bigbr
@@ -667,7 +666,7 @@ md"""#### But is it Python?
 
 	Otherwise, a slower but reliable Python implementation of SGP4 is used instead.
 
-##### `sgp4.api.Satrec.sgp4` calls  `sgp4.vallado_cpp.Satrec`
+##### The Python `sgp4` API called `sgp4.vallado_cpp.Satrec`.
 """
 
 # ╔═╡ 6d23a0cc-7074-11eb-1803-5f9147f47d48
@@ -718,15 +717,9 @@ bigbr
 # ╔═╡ 98d06838-6e31-11eb-28b3-3deaea5131c7
 bigbr
 
-# ╔═╡ ed97389c-657b-11eb-2a66-85ea207477c4
-mtime = 31.06; jtime = 0.525 # ms;
-
-# ╔═╡ 5fd01a92-7070-11eb-31fb-898d900d3b0e
-md"##### The Matlab time to beat is $mtime seconds."
-
 # ╔═╡ 7de28764-657a-11eb-3a09-dbfe24cad780
 md"
-### Runtime on home computer: 
+### Runtimes on home computer: 
 #### Matlab - $mtime s
 #### Python/C++ - $(round(pytime, digits=2)) s
 #### Julia  - $jtime s
@@ -746,9 +739,9 @@ br
 
 # ╔═╡ fb3392e9-6870-422d-9dc1-911f207205ff
 md"
-#### Interesting note: 
-##### example runtime, March 2021 - 0.75 s
-##### example runtime, July 2021 - $jtime s
+#### Interesting note on SatelliteToolbox runtime: 
+##### March 2021 - 0.75 s
+##### July 2021 - $jtime s
 
 ##### The code example is $(round(Int, 100*(0.75 - 0.525)/0.75))% faster than when I wrote it!
 
@@ -767,7 +760,7 @@ hr
 md"""
 ## Parallel programming
 
-### Parallelizing code *can be* easy.
+### Parallelizing code *can* be easy.
 
 ### Types of parallelism that Julia supports
 
@@ -836,7 +829,7 @@ jttime = 0.100 # multi-threaded time;
 
 # ╔═╡ 485002ee-657e-11eb-2a1e-4b6ceb4e86b4
 md"
-#### Run times on home computer:
+#### Runtimes on home computer:
 #### Matlab (1 thread) - $mtime s
 #### Python/C++ (1 thread) - $(round(pytime, digits=2)) s
 #### Julia (1 thread) - $jtime s
@@ -848,10 +841,10 @@ br
 
 # ╔═╡ 7511a470-7075-11eb-123e-eb2c888210ec
 md"""
-### Final results: 
+### Final code:
 
-#### Julia is $(round(mtime/jttime, digits=1))x faster than Matlab.
-#### Julia is $(round(pytime/jtime, digits=1))x faster than PyC++.
+#### $(round(mtime/jttime, digits=1))x faster than Matlab.
+#### $(round(pytime/jttime, digits=1))x faster than PyC++.
 """
 
 # ╔═╡ cf952cda-7119-11eb-2236-218a27d8e1ac
@@ -1051,11 +1044,11 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─e2b9a78e-9313-11eb-2899-b5354d00b10c
 # ╟─b681e152-8e31-11eb-37a1-73d640a225b0
 # ╟─47cda722-9187-11eb-3126-f5edb8b1057e
-# ╟─492e55c8-9187-11eb-08c1-418da2d63ba1
 # ╟─03c3bf38-6493-11eb-1cd2-4bcf96696f89
 # ╟─d3220a8c-6495-11eb-0c22-0d1b450c91f1
 # ╟─0bd4be8a-6c8c-11eb-0f56-e9c2d10bacaa
 # ╟─80745e40-6498-11eb-2f82-d133e2d32f78
+# ╠═ed30741f-474c-4f88-bf90-b5fe3c008caa
 # ╟─ea2b7858-649c-11eb-36a8-2f2670063bee
 # ╟─482e7128-64c1-11eb-3af8-2dff4ca691c3
 # ╟─a2ef89dc-649c-11eb-100f-55274909e1b4
@@ -1108,8 +1101,6 @@ md"""## "This is the end, my only friend, the end!"
 # ╠═986417d2-768c-4401-ace2-4f340815899e
 # ╟─4f10b094-19ba-491c-86ae-c26853149da5
 # ╟─05b9366a-64ae-11eb-1535-63b2eb1a237c
-# ╟─7fab76be-92e3-11eb-11cc-051b8bd8bbce
-# ╟─7bfaadfa-92e3-11eb-39ca-89cb7e4fd8c1
 # ╟─010ee5f4-7135-11eb-2987-f34bb67004c1
 # ╟─be821d4a-64b3-11eb-0013-39de4b85317c
 # ╠═1078b698-64ae-11eb-23b5-59dafc065ec8
@@ -1142,8 +1133,8 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─489df172-6577-11eb-036a-0721f2d5e86a
 # ╟─3d05e82a-711f-11eb-2cc6-03e9b45e4d16
 # ╟─4f914b28-6577-11eb-307e-d3fcb5d7090b
-# ╟─65661654-6577-11eb-3a2a-cd07152d69ee
-# ╟─5fd01a92-7070-11eb-31fb-898d900d3b0e
+# ╠═65661654-6577-11eb-3a2a-cd07152d69ee
+# ╠═5fd01a92-7070-11eb-31fb-898d900d3b0e
 # ╟─4eb669bd-8c69-4f5f-a574-76155df88c67
 # ╟─82081be6-7070-11eb-176c-bd1e2329373e
 # ╟─500dee00-7072-11eb-2a44-dd95d512fd0a
@@ -1164,7 +1155,6 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─dbd5e0b8-711f-11eb-3e9b-a1e6a9a02380
 # ╠═2e2b882e-657a-11eb-3fd2-833ec80ab780
 # ╟─98d06838-6e31-11eb-28b3-3deaea5131c7
-# ╟─ed97389c-657b-11eb-2a66-85ea207477c4
 # ╟─7de28764-657a-11eb-3a09-dbfe24cad780
 # ╟─6496d06a-657c-11eb-0135-0d8a17125891
 # ╟─489343cc-7075-11eb-09c9-8730d3e8949a
@@ -1192,7 +1182,7 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─cf952cda-7119-11eb-2236-218a27d8e1ac
 # ╟─1ad3f216-fef7-4b70-9b68-ab1de18c3126
 # ╟─cc73dec8-2dae-4a68-b6fb-5ae880fedcfd
-# ╟─4507ca61-1526-4251-8587-2fe6e80c61e5
+# ╠═4507ca61-1526-4251-8587-2fe6e80c61e5
 # ╠═09d49654-4d62-4fb3-bfc6-d8585e0f5bb9
 # ╠═3c41c16b-0c36-4745-8229-3907296acd15
 # ╠═63e0878c-a238-47d7-b4a2-90f796132071
@@ -1209,7 +1199,7 @@ md"""## "This is the end, my only friend, the end!"
 # ╠═6df77ab4-fc6a-48a4-91bc-7791e22f029c
 # ╟─85486149-41aa-4718-a7cf-8f9935b0a05a
 # ╟─d8bd9384-1d42-40ba-953f-774c080aa12c
-# ╟─2d64436b-7bbb-44a2-8cc3-de84870c3e0a
+# ╠═2d64436b-7bbb-44a2-8cc3-de84870c3e0a
 # ╠═2f46ddec-3d19-4f65-9d1c-ef853fca945a
 # ╠═e02ec379-f5ad-45e6-87eb-82ee5ac7fe9a
 # ╠═496a9ed9-d9d4-4836-879f-a4074f7ee64c
