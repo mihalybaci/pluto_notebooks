@@ -996,7 +996,7 @@ if has_cuda()
 	jsg = @benchmark juliaset_gpu(width=width, height=height)
 	jsgt = round(jsg.times[1]/1e6, digits=2)
 else
-	jsgt = 2.6 # approx time on a K80
+	jsgt = 1.31 # Fastest time on a K80 with 4 vCPUs (via JuliaHub)
 end
 
 # ╔═╡ 7ae1f380-4e59-4b97-9c36-209158bde42e
