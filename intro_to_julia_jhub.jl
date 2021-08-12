@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.0
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
@@ -88,9 +88,6 @@ md"#### Base language only!"
 
 # ╔═╡ 80745e40-6498-11eb-2f82-d133e2d32f78
 load(download("https://raw.githubusercontent.com/mihalybaci/pluto_notebooks/main/images/julia_bench.png"))
-
-# ╔═╡ ed30741f-474c-4f88-bf90-b5fe3c008caa
-
 
 # ╔═╡ ea2b7858-649c-11eb-36a8-2f2670063bee
 bigbr
@@ -308,7 +305,6 @@ md"""### Does Google live up to it's "Don't Be Evil" code of conduct?"""
 # ╔═╡ 4dbfbc7e-64a2-11eb-29f0-891d4121fc8f
 mutable struct Corporation
 	name
-	Corporation(str) = new(str)
 end
 
 # ╔═╡ ee7515e0-64a4-11eb-3d94-77b8a34c3f7b
@@ -348,9 +344,6 @@ macro only1(code)
 	return :( 1 )
 end
 
-# ╔═╡ b21b30e3-67e4-423d-9d4e-80c28a1b263e
-@only1 sin(π)
-
 # ╔═╡ 9e3393aa-d6de-47c1-85de-ec8488d34458
 @macroexpand @benchmark sin(1)
 
@@ -361,7 +354,7 @@ bigbr
 sayhello(name) = println("Hello, ", name, ".")
 
 # ╔═╡ 9960cea7-2e2a-4b7f-aaab-633ff0308bda
-sayhello("Bob")  # prints to STDOUT
+sayhello("Bob")  # output missing in Pluto! prints to STDOUT
 
 # ╔═╡ 7bdb090a-50f8-4b86-9d82-77db15939b17
 br
@@ -833,7 +826,7 @@ md"
 #### Matlab (1 thread) - $mtime s
 #### Python/C++ (1 thread) - $(round(pytime, digits=2)) s
 #### Julia (1 thread) - $jtime s
-#### Julia ($nt threads) - $jttime s
+#### Julia (8 threads) - $jttime s
 "
 
 # ╔═╡ 911847b4-7075-11eb-20ef-715b719f94f4
@@ -865,7 +858,7 @@ md"### Single-threaded version"
 
 # ╔═╡ 09d49654-4d62-4fb3-bfc6-d8585e0f5bb9
 function escape(z0, maxiter)
-    c = ComplexF64(-0.512511498387847167, 0.521295573094847167)
+    c = ComplexF32(-0.512511498387847167, 0.521295573094847167)
     z = z0
     for i ∈ 1:maxiter
         abs2(z) > 4f0 && return (i-1) % UInt8
@@ -876,9 +869,10 @@ end
 
 # ╔═╡ 3c41c16b-0c36-4745-8229-3907296acd15
 function juliaset(;width=600, height=450, maxiter=255)
-	real = range(-1.5, 1.5, length=width)
-	imag = range(-1, 1, length=height)*im
-    result =  zeros(Int, height, width)
+	
+	real = range(-1.5f0, 1.5f0, length=width)
+	imag = range(-1.0f0, 1.0f0, length=height)*im
+    result =  zeros(UInt8, height, width)
 	for x = 1:width
 		for y = 1:height
 			z₀ = real[x] + imag[y]
@@ -907,10 +901,10 @@ bigbr
 md"### Multi-threaded"
 
 # ╔═╡ d947d115-6ae8-44aa-8fc8-1d0c35aba81a
-function juliaset_threads(;width=600, height=450, maxiter=256)
-	real = range(-1.5, 1.5, length=width)
-	imag = range(-1, 1, length=height)*im
-    result =  zeros(Int, height, width)
+function juliaset_threads(;width=600, height=450, maxiter=255)
+	real = range(-1.5f0, 1.5f0, length=width)
+	imag = range(-1.0f0, 1.0f0, length=height)*im
+    result =  zeros(UInt8, height, width)
 	Threads.@threads for x = 1:width
 		for y = 1:height
 			z₀ = real[x] + imag[y]
@@ -930,10 +924,10 @@ bigbr
 md"### Tasks"
 
 # ╔═╡ 258f1ba0-fcfe-467c-803a-0fd22b4d9317
-function juliaset_spawn(;width=600, height=450, maxiter=256)
-	real = range(-1.5, 1.5, length=width)
-	imag = range(-1, 1, length=height)*im
-    result =  zeros(Int, height, width)
+function juliaset_spawn(;width=600, height=450, maxiter=255)
+	real = range(-1.5f0, 1.5f0, length=width)
+	imag = range(-1.0f0, 1.0f0, length=height)*im
+    result =  zeros(UInt8, height, width)
 	@sync for x = 1:width
 		Threads.@spawn for y = 1:height
 			z₀ = real[x] + imag[y]
@@ -966,9 +960,32 @@ function run!(in, out; maxiter=16)
     out .= escape.(in, maxiter)
 end
 
+# ╔═╡ e7f4983c-8711-48af-abfb-d523af4fa508
+br
+
+# ╔═╡ 69a96948-64ee-47ae-b3f1-2f7c7e77dbce
+md"### Find the differences: CPU v GPU edition"
+
+# ╔═╡ 99f80ac1-29f8-41f7-a087-30f743812f1b
+function juliaset_cpu(;width=600, height=450, maxiter=255)
+    q =  [ComplexF32(real, imag) for imag in range(-1.0f0, 1.0f0, length=height), real in range(-1.5f0, 1.5f0, length=width)]
+    result = zeros(UInt8, size(q))
+    run!(q, result, maxiter=maxiter)
+    return result
+end
+
+# ╔═╡ 59275368-2a30-4eb2-9193-f366974b3ef6
+@benchmark juliaset_cpu(width=width, height=height)
+
+# ╔═╡ dc4f9c47-6584-4eac-aab7-2ca8d2948efa
+jsc = juliaset_cpu(width=width, height=height)
+
+# ╔═╡ b55a8e95-d1f7-4d33-97a0-a3f7b88a8539
+Gray.(jsc/maximum(jsc))
+
 # ╔═╡ e02ec379-f5ad-45e6-87eb-82ee5ac7fe9a
-function juliaset_gpu(;width=600, height=450, maxiter=256)
-    q =  CuArray([ComplexF64(real, imag) for imag in range(-2.0, 0.5, length=width), real in range(-1.0, 1.0, length=height)])
+function juliaset_gpu(;width=600, height=450, maxiter=255)
+    q =  CuArray([ComplexF32(real, imag) for imag in range(-1.0f0, 1.0f0, length=height), real in range(-1.5f0, 1.5f0, length=width)])
     result = CuArray(zeros(UInt8, size(q)))
     run!(q, result, maxiter=maxiter)
     return result
@@ -979,7 +996,7 @@ if has_cuda()
 	jsg = @benchmark juliaset_gpu(width=width, height=height)
 	jsgt = round(jsg.times[1]/1e6, digits=2)
 else
-	jsgt = 1.1 # approx time on a K80
+	jsgt = 2.6 # approx time on a K80
 end
 
 # ╔═╡ 7ae1f380-4e59-4b97-9c36-209158bde42e
@@ -1048,7 +1065,6 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─d3220a8c-6495-11eb-0c22-0d1b450c91f1
 # ╟─0bd4be8a-6c8c-11eb-0f56-e9c2d10bacaa
 # ╟─80745e40-6498-11eb-2f82-d133e2d32f78
-# ╠═ed30741f-474c-4f88-bf90-b5fe3c008caa
 # ╟─ea2b7858-649c-11eb-36a8-2f2670063bee
 # ╟─482e7128-64c1-11eb-3af8-2dff4ca691c3
 # ╟─a2ef89dc-649c-11eb-100f-55274909e1b4
@@ -1089,7 +1105,6 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─36292f5d-6bfe-415c-a119-35fd12cc4bd4
 # ╟─dcbf8055-b94e-457d-a261-02d914235033
 # ╠═9376a8b8-0719-4b97-bd1a-f1ffe34b4a87
-# ╠═b21b30e3-67e4-423d-9d4e-80c28a1b263e
 # ╠═9e3393aa-d6de-47c1-85de-ec8488d34458
 # ╟─f9604c02-69b4-4764-bcc5-081c39c0cebb
 # ╠═bc64e284-aaf5-43c2-9cc9-a0c352f7044f
@@ -1182,7 +1197,7 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─cf952cda-7119-11eb-2236-218a27d8e1ac
 # ╟─1ad3f216-fef7-4b70-9b68-ab1de18c3126
 # ╟─cc73dec8-2dae-4a68-b6fb-5ae880fedcfd
-# ╠═4507ca61-1526-4251-8587-2fe6e80c61e5
+# ╟─4507ca61-1526-4251-8587-2fe6e80c61e5
 # ╠═09d49654-4d62-4fb3-bfc6-d8585e0f5bb9
 # ╠═3c41c16b-0c36-4745-8229-3907296acd15
 # ╠═63e0878c-a238-47d7-b4a2-90f796132071
@@ -1201,6 +1216,12 @@ md"""## "This is the end, my only friend, the end!"
 # ╟─d8bd9384-1d42-40ba-953f-774c080aa12c
 # ╠═2d64436b-7bbb-44a2-8cc3-de84870c3e0a
 # ╠═2f46ddec-3d19-4f65-9d1c-ef853fca945a
+# ╟─e7f4983c-8711-48af-abfb-d523af4fa508
+# ╟─69a96948-64ee-47ae-b3f1-2f7c7e77dbce
+# ╠═99f80ac1-29f8-41f7-a087-30f743812f1b
+# ╠═59275368-2a30-4eb2-9193-f366974b3ef6
+# ╠═dc4f9c47-6584-4eac-aab7-2ca8d2948efa
+# ╠═b55a8e95-d1f7-4d33-97a0-a3f7b88a8539
 # ╠═e02ec379-f5ad-45e6-87eb-82ee5ac7fe9a
 # ╠═496a9ed9-d9d4-4836-879f-a4074f7ee64c
 # ╟─7ae1f380-4e59-4b97-9c36-209158bde42e
